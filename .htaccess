@@ -1,7 +1,5 @@
-Options -Indexes
 <IfModule mod_rewrite.c>
-	RewriteEngine On
-	# Redirect root of project to public/ as entry point
-	RewriteRule ^public$ public/ [L]
-	RewriteRule ^$ public/ [L]
+    RewriteEngine On
+    RewriteRule ^$ public/ [L]
+    RewriteRule (.*) public/$1 [L]
 </IfModule>

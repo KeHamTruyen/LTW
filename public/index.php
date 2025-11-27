@@ -31,8 +31,32 @@ spl_autoload_register(function ($class) use ($baseDir) {
 });
 
 $router = new Router();
+
+// Public routes
 $router->get('/', 'HomeController@index');
 $router->get('/login', 'AuthController@login');
+
+// Posts (Public)
+$router->get('/posts', 'PostController@index');
+$router->get('/posts/show', 'PostController@show');
+$router->post('/posts/comment', 'PostController@submitComment');
+
+// Admin routes
 $router->get('/admin', 'Admin\\PageController@dashboard');
+
+// Admin - Posts Management
+$router->get('/admin/posts', 'Admin\\PostController@index');
+$router->get('/admin/posts/create', 'Admin\\PostController@create');
+$router->post('/admin/posts/store', 'Admin\\PostController@store');
+$router->get('/admin/posts/edit', 'Admin\\PostController@edit');
+$router->post('/admin/posts/update', 'Admin\\PostController@update');
+$router->post('/admin/posts/delete', 'Admin\\PostController@delete');
+
+// Admin - Comments Management
+$router->get('/admin/comments', 'Admin\\CommentController@index');
+$router->post('/admin/comments/approve', 'Admin\\CommentController@approve');
+$router->post('/admin/comments/reject', 'Admin\\CommentController@reject');
+$router->post('/admin/comments/spam', 'Admin\\CommentController@spam');
+$router->post('/admin/comments/delete', 'Admin\\CommentController@delete');
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
