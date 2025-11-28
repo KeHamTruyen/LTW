@@ -1,89 +1,189 @@
-# PetCare — PHP BE + Vite/React FE (CSS-only)
+# PetCare — PHP MVC Project
 
-Kiến trúc tách 2 phần: `BE/` (PHP thuần, chạy trên XAMPP/Apache) và `FE/` (Vite/React, dùng Tabler CSS). FE build ra bundle, BE tự nạp qua manifest hoặc HMR khi chạy dev server.
+Dự án web quản lý thú cưng với kiến trúc MVC thuần PHP (không dùng framework). Backend chạy trên XAMPP/Apache, Frontend sử dụng HTML/CSS/JS thuần và Tabler CSS cho admin dashboard.
 
 ## Yêu cầu
 
-- XAMPP (Apache + MySQL) trên Windows.
-- Node.js 18+ và npm.
+- PHP 7.0+
+- XAMPP (Apache + MySQL) trên Windows
+- Node.js 18+ và npm (cho FE development nếu cần)
 
-## Cấu trúc ngắn gọn
+## Cấu trúc dự án
 
 ```
 LTW/
-├─ BE/
-│  ├─ app/                 # core (Router, Controller, Database, Auth, Assets), controllers, views
-│  └─ public/              # DocumentRoot của Apache
-│     └─ assets/build/     # FE build output (manifest.json + bundle)
-├─ FE/
-│  ├─ resources/js/main.tsx    # Entry Vite (import Tabler + app.css)
-│  ├─ resources/js/components/  # React components
-│  ├─ resources/css/app.css     # CSS tuỳ biến
-│  ├─ vendor/tabler/dist/       # Tabler CSS/JS (đã copy vào FE)
-│  └─ vite.config.ts
-└─ database/schema.sql
+├─ app/
+│  ├─ core/                # Router, Controller, Database, Auth, Assets
+│  ├─ controllers/         # PostController, AuthController, etc.
+│  ├─ models/              # Post, User, PostComment models
+│  └─ views/
+│     ├─ layouts/          # public.php (blog layout), main.php (admin layout)
+│     ├─ posts/            # index.php, show.php
+│     └─ auth/             # login.php, register.php
+├─ public/
+│  ├─ index.php            # Entry point
+│  ├─ .htaccess            # URL rewriting rules
+│  └─ assets/
+│     ├─ css/
+│     │  └─ public.css     # Blog/public pages styling
+│     ├─ images/
+│     │  └─ logo.png       # 4 dogs logo
+│     └─ tabler/           # Tabler admin dashboard assets
+├─ database/
+│  ├─ schema.sql           # Database structure
+│  └─ migrations/          # Database migration files
+├─ dashboard/              # Tabler templates (reference only)
+└─ FE/                     # Vite/React (optional, for future use)
 ```
 
 ## Cài đặt nhanh
 
-1. Database
+### 1. Database
 
-- Mở phpMyAdmin → import `database/schema.sql`.
+- Mở phpMyAdmin (http://localhost/phpmyadmin)
+- Tạo database mới: `petcare_db`
+- Import file `database/schema.sql`
 
-2. Cấu hình BE
+### 2. Cấu hình
 
-- Mở `BE/app/config.php` → chỉnh thông tin MySQL nếu cần (XAMPP mặc định: user `root`, password trống).
+- Mở `app/core/config.php` → chỉnh thông tin MySQL nếu cần:
+  - Host: `localhost`
+  - Database: `petcare_db`
+  - User: `root`
+  - Password: (để trống với XAMPP mặc định)
 
-3. Cài FE dependencies
+### 3. Cấu hình Apache (.htaccess)
 
-```cmd
-cd C:\xampp\htdocs\LTW\FE
-npm install
-```
+Dự án sử dụng URL rewriting, cần bật `mod_rewrite` trong Apache:
+
+- Mở `C:\xampp\apache\conf\httpd.conf`
+- Tìm dòng `#LoadModule rewrite_module modules/mod_rewrite.so`
+- Bỏ dấu `#` để uncomment
+- Restart Apache
+
+### 4. Assets
+
+- Logo 4 con chó: đã có sẵn tại `public/assets/images/logo.png`
+- Tabler admin assets: đã copy vào `public/assets/tabler/`
 
 ## Chạy dự án
 
-Chọn 1 trong 2 cách dưới đây.
+### URL truy cập
 
-1. Dev nhanh (HMR)
+- **Trang Blog**: `http://localhost/LTW/posts`
+- **Trang chủ**: `http://localhost/LTW/` (đang phát triển)
+- **Admin dashboard**: `http://localhost/LTW/admin` (đang phát triển)
 
-- Start Vite dev server:
+### Routing
 
-```cmd
-cd C:\xampp\htdocs\LTW\FE
-npm run dev
+Dự án sử dụng clean URL với `.htaccess`:
+
+- Tất cả request được redirect vào `public/index.php`
+- Router phân tích URL và gọi controller tương ứng
+- Ví dụ: `/posts` → `PostController::index()`
+
+## Tính năng hiện tại
+
+### Blog (Public)
+
+- ✅ Danh sách bài viết với phân trang
+- ✅ Sắp xếp: mới nhất/cũ nhất/phổ biến
+- ✅ Sidebar: danh mục, bài viết gần đây
+- ✅ Hero section với logo 4 con chó
+- ✅ Responsive design
+- ⏳ Chi tiết bài viết (đang phát triển)
+- ⏳ Bình luận và đánh giá (đang phát triển)
+
+### Authentication
+
+- ✅ Đăng ký tài khoản
+- ✅ Đăng nhập/Đăng xuất
+- ✅ Session management
+- ✅ CSRF protection
+
+### Admin Dashboard
+
+- ⏳ Quản lý bài viết (đang phát triển)
+- ⏳ Quản lý người dùng (đang phát triển)
+- ⏳ Thống kê (đang phát triển)
+
+## Kiến trúc MVC
+
+### Router (`app/core/Router.php`)
+
+```php
+$router->get('/posts', 'PostController@index');
+$router->get('/posts/{id}', 'PostController@show');
+$router->post('/posts/{id}/comment', 'PostController@addComment');
 ```
 
-- Mở BE (Apache):
-  - Mặc định: `http://localhost/LTW/BE/public/`
-  - Hoặc VirtualHost: `http://petcare.local/`
-- BE tự phát hiện dev server (port 5173) và nạp `@vite/client` + `resources/js/main.tsx`. Sửa FE sẽ tự reload.
+### Controller (`app/controllers/PostController.php`)
 
-2. Build production
-
-```cmd
-cd C:\xampp\htdocs\LTW\FE
-npm run build
+```php
+class PostController extends Controller {
+    public function index() {
+        $posts = Post::all();
+        return $this->view('posts/index', ['posts' => $posts], 'public');
+    }
+}
 ```
 
-- Reload trang BE. BE sẽ nạp bundle hash qua `BE/public/assets/build/manifest.json`.
+### Model (`app/models/Post.php`)
 
-## Nơi viết FE
+```php
+class Post extends Model {
+    protected static $table = 'posts';
+    
+    public static function all() {
+        return self::query("SELECT * FROM posts ORDER BY published_at DESC");
+    }
+}
+```
 
-- JS entry: `FE/resources/js/main.tsx`
-- Components: `FE/resources/js/components/*` (ví dụ `HelloReact.tsx`)
-- CSS: `FE/resources/css/app.css`
-- Tabler: đã nằm ở `FE/vendor/tabler/dist` và được import trong `main.tsx`.
-- Mount vào view BE: chèn `<div id="react-root" data-name="..."></div>` trong file view (ví dụ trong `BE/app/views/...`) — React sẽ render vào đây.
+### View (`app/views/posts/index.php`)
 
-## URL chính
+```php
+<!-- Sử dụng layout public.php -->
+<!-- Hiển thị danh sách bài viết -->
+```
 
-- BE: `http://localhost/LTW/BE/public/` (hoặc `http://petcare.local/`)
-- Admin (nếu có): thêm `/admin` vào cuối URL BE.
+## Gỡ lỗi
 
-## Gỡ lỗi nhanh
+### Lỗi 500 Internal Server Error
 
-- Không có style/JS ở BE: kiểm tra đã chạy `npm run build` (có `manifest.json` trong `BE/public/assets/build/`) hoặc Vite dev server đang chạy.
-- HMR không hoạt động: giữ terminal `npm run dev` đang mở, vào DevTools → Network xem `/@vite/client` và `/resources/js/main.tsx` trả về 200.
+- Kiểm tra `mod_rewrite` đã bật trong Apache
+- Kiểm tra file `.htaccess` có cấu hình đúng
+- Xem log: `C:\xampp\apache\logs\error.log`
 
-Hoàn tất. Bạn có thể bắt đầu code FE trong `FE/resources/*` và xem kết quả trực tiếp trên trang BE.
+### CSS/JS không load
+
+- Kiểm tra đường dẫn assets trong view
+- Kiểm tra constant `BASE_URL` trong `config.php`
+- F12 → Network tab để xem file nào bị 404
+
+### Database connection error
+
+- Kiểm tra MySQL đã start trong XAMPP
+- Kiểm tra thông tin kết nối trong `app/core/config.php`
+- Kiểm tra database `petcare_db` đã được tạo
+
+## Phát triển tiếp
+
+### TODO List
+
+- [ ] Trang chi tiết bài viết (`posts/show.php`)
+- [ ] Chức năng bình luận và đánh giá
+- [ ] Filter bài viết theo danh mục
+- [ ] Admin dashboard với Tabler
+- [ ] Trang Home, About, Contact, Q&A, Shop, Service
+- [ ] Authentication pages với public design
+- [ ] Upload và quản lý hình ảnh
+
+### Coding Standards
+
+- PHP 7.0+ syntax
+- PSR-4 autoloading style
+- Prepared statements cho database queries
+- htmlspecialchars() cho output
+- CSRF token cho forms
+- Không dùng framework (yêu cầu assignment)

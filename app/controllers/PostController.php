@@ -19,6 +19,9 @@ class PostController extends Controller
 
         // Search
         $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        
+        // Sort
+        $sort = isset($_GET['sort']) ? $_GET['sort'] : 'latest';
 
         // Filters
         $filters = [
@@ -30,20 +33,29 @@ class PostController extends Controller
         if (!empty($search)) {
             $filters['search'] = $search;
         }
+        
+        // Apply sort
+        if ($sort === 'oldest') {
+            $filters['order_by'] = 'published_at ASC';
+        } else {
+            $filters['order_by'] = 'published_at DESC';
+        }
 
         // Get posts and total count
         $posts = Post::getAll($filters);
         $totalPosts = Post::count($filters);
         $totalPages = ceil($totalPosts / $perPage);
 
-        // Render view
+        // Render view with public layout
         $this->view('posts/index', [
             'posts' => $posts,
             'search' => $search,
+            'sort' => $sort,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalPosts' => $totalPosts,
-        ], 'Tin tức');
+            'activeMenu' => 'blog',
+        ], 'Blog - Tin tức thú cưng', 'public');
     }
 
     /**

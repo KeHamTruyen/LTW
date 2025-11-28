@@ -1,133 +1,145 @@
-<div class="container-xl">
-    <!-- Page header -->
-    <div class="page-header d-print-none">
-        <div class="row g-2 align-items-center">
-            <div class="col">
-                <h2 class="page-title">
-                    Tin tức & Bài viết
-                </h2>
-                <div class="text-secondary mt-1">
-                    Tìm thấy <?= $totalPosts ?> bài viết
-                </div>
-            </div>
-            <div class="col-auto ms-auto">
-                <!-- Search form -->
-                <form action="<?= BASE_URL ?>posts" method="GET" class="d-flex">
-                    <input type="search" name="search" class="form-control me-2" 
-                           placeholder="Tìm kiếm bài viết..." 
-                           value="<?= htmlspecialchars($search) ?>"
-                           style="width: 300px;">
-                    <button type="submit" class="btn btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
-                        Tìm
+<!-- MAIN CONTENT -->
+<div class="container">
+    <div class="content-wrapper">
+        <div class="main-content">
+            <!-- CONTROLS -->
+            <div class="controls">
+                <form method="GET" style="display: contents;">
+                    <select name="sort" class="sort-btn" onchange="this.form.submit()">
+                        <option value="latest" <?= ($sort ?? 'latest') === 'latest' ? 'selected' : '' ?>>Sort by latest</option>
+                        <option value="oldest" <?= ($sort ?? '') === 'oldest' ? 'selected' : '' ?>>Sort by oldest</option>
+                        <option value="popular" <?= ($sort ?? '') === 'popular' ? 'selected' : '' ?>>Most popular</option>
+                    </select>
+                </form>
+
+                <form action="<?= BASE_URL ?>posts" method="GET" class="search-box">
+                    <input type="text" name="search" placeholder="Search..." value="<?= htmlspecialchars($search ?? '') ?>">
+                    <button type="submit" class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.36892 14.4449C12.1745 14.4449 14.4488 12.1705 14.4488 9.36502C14.4488 6.55949 12.1745 4.28516 9.36892 4.28516C6.56339 4.28516 4.28906 6.55949 4.28906 9.36502C4.28906 12.1705 6.56339 14.4449 9.36892 14.4449Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M15.7153 15.7149L12.9531 12.9527" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
                     </button>
                 </form>
             </div>
-        </div>
-    </div>
 
-    <!-- Posts grid -->
-    <div class="page-body">
-        <?php if (empty($posts)): ?>
-            <div class="empty">
-                <div class="empty-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <!-- BLOG GRID -->
+            <?php if (empty($posts)): ?>
+                <div style="text-align: center; padding: 60px 20px;">
+                    <h3 style="font-size: 24px; margin-bottom: 12px;">Không tìm thấy bài viết nào</h3>
+                    <p style="color: var(--gray-600);">
+                        <?php if (!empty($search)): ?>
+                            Thử tìm kiếm với từ khóa khác
+                        <?php else: ?>
+                            Chưa có bài viết nào được đăng
+                        <?php endif; ?>
+                    </p>
                 </div>
-                <p class="empty-title">Không tìm thấy bài viết nào</p>
-                <p class="empty-subtitle text-secondary">
-                    <?php if (!empty($search)): ?>
-                        Thử tìm kiếm với từ khóa khác
-                    <?php else: ?>
-                        Chưa có bài viết nào được đăng
-                    <?php endif; ?>
-                </p>
-            </div>
-        <?php else: ?>
-            <div class="row row-cards">
-                <?php foreach ($posts as $post): ?>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card">
+            <?php else: ?>
+                <div class="blog-grid">
+                    <?php foreach ($posts as $post): ?>
+                        <div class="blog-card">
                             <?php if ($post['cover_image_url']): ?>
                                 <img src="<?= BASE_URL ?>uploads/<?= htmlspecialchars($post['cover_image_url']) ?>" 
-                                     class="card-img-top" 
-                                     alt="<?= htmlspecialchars($post['title']) ?>"
-                                     style="height: 200px; object-fit: cover;">
+                                     class="blog-card-image" 
+                                     alt="<?= htmlspecialchars($post['title']) ?>">
                             <?php else: ?>
-                                <div class="card-img-top" style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                                <div class="blog-card-image"></div>
                             <?php endif; ?>
                             
-                            <div class="card-body">
-                                <h3 class="card-title">
-                                    <a href="<?= BASE_URL ?>posts/show?slug=<?= urlencode($post['slug']) ?>">
-                                        <?= htmlspecialchars($post['title']) ?>
-                                    </a>
-                                </h3>
-                                <p class="text-secondary">
-                                    <?= htmlspecialchars(mb_substr($post['summary'] ?? '', 0, 120)) ?>...
+                            <div class="blog-card-content">
+                                <h3 class="blog-card-title"><?= htmlspecialchars($post['title']) ?></h3>
+                                <p class="blog-card-excerpt">
+                                    <?= htmlspecialchars(mb_substr(strip_tags($post['summary'] ?? $post['content_html']), 0, 100)) ?>...
                                 </p>
-                                <div class="d-flex align-items-center pt-3 mt-auto">
-                                    <div>
-                                        <div class="text-secondary">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-                                            <?= htmlspecialchars($post['author_name'] ?? 'Admin') ?>
-                                        </div>
-                                        <div class="text-secondary mt-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
-                                            <?= date('d/m/Y', strtotime($post['published_at'] ?? $post['created_at'])) ?>
-                                        </div>
-                                    </div>
-                                    <div class="ms-auto">
-                                        <a href="<?= BASE_URL ?>posts/show?slug=<?= urlencode($post['slug']) ?>" class="btn btn-primary">
-                                            Đọc tiếp
-                                        </a>
-                                    </div>
-                                </div>
+                                <a href="<?= BASE_URL ?>posts/show?slug=<?= urlencode($post['slug']) ?>" class="blog-card-btn">Xem Thêm</a>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+                    <?php endforeach; ?>
+                </div>
 
-            <!-- Pagination -->
-            <?php if ($totalPages > 1): ?>
-                <div class="card-footer d-flex align-items-center">
-                    <p class="m-0 text-secondary">
-                        Trang <?= $currentPage ?> / <?= $totalPages ?>
-                    </p>
-                    <ul class="pagination m-0 ms-auto">
-                        <?php if ($currentPage > 1): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="?p=<?= $currentPage - 1 ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                                    Trước
-                                </a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php
-                        $start = max(1, $currentPage - 2);
-                        $end = min($totalPages, $currentPage + 2);
-                        
-                        for ($i = $start; $i <= $end; $i++):
-                        ?>
-                            <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
-                                <a class="page-link" href="?p=<?= $i ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>">
+                <!-- PAGINATION -->
+                <?php if ($totalPages > 1): ?>
+                    <div class="pagination">
+                        <div class="pagination-numbers">
+                            <?php
+                            $start = max(1, $currentPage - 2);
+                            $end = min($totalPages, $currentPage + 2);
+                            
+                            for ($i = $start; $i <= $end; $i++):
+                            ?>
+                                <a href="?p=<?= $i ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= !empty($sort) ? '&sort=' . urlencode($sort) : '' ?>" 
+                                   class="page-btn <?= $i === $currentPage ? 'active' : '' ?>">
                                     <?= $i ?>
                                 </a>
-                            </li>
-                        <?php endfor; ?>
-
+                            <?php endfor; ?>
+                            
+                            <?php if ($end < $totalPages): ?>
+                                <span class="page-btn" style="cursor: default; border: none;">..</span>
+                            <?php endif; ?>
+                        </div>
+                        
                         <?php if ($currentPage < $totalPages): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="?p=<?= $currentPage + 1 ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>">
-                                    Sau
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                                </a>
-                            </li>
+                            <a href="?p=<?= $currentPage + 1 ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?><?= !empty($sort) ? '&sort=' . urlencode($sort) : '' ?>" class="next-btn">
+                                <span>Next</span>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9 18L15 12L9 6" stroke="#6C757D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
                         <?php endif; ?>
-                    </ul>
-                </div>
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
-        <?php endif; ?>
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="filter-section">
+                <div class="filter-title">Danh mục</div>
+                <div class="filter-list">
+                    <div class="filter-item">
+                        <label class="filter-checkbox-label">
+                            <input type="checkbox" class="filter-checkbox">
+                            <span class="filter-text">Chia sẻ kinh nghiệm</span>
+                        </label>
+                        <span class="count-badge">21</span>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-checkbox-label">
+                            <input type="checkbox" class="filter-checkbox">
+                            <span class="filter-text">Gióc giải trí</span>
+                        </label>
+                        <span class="count-badge">28</span>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-checkbox-label">
+                            <input type="checkbox" class="filter-checkbox">
+                            <span class="filter-text">Dịch vụ tại nhà</span>
+                        </label>
+                        <span class="count-badge">12</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">Bài viết mới</div>
+                <div class="recent-posts">
+                    <?php
+                    // Get 4 latest posts for sidebar
+                    $recentPosts = array_slice($posts, 0, 4);
+                    foreach ($recentPosts as $recentPost):
+                    ?>
+                        <div class="recent-post">
+                            <h4 class="recent-post-title">
+                                <a href="<?= BASE_URL ?>posts/show?slug=<?= urlencode($recentPost['slug']) ?>" style="color: inherit; text-decoration: none;">
+                                    <?= htmlspecialchars($recentPost['title']) ?>
+                                </a>
+                            </h4>
+                            <p class="recent-post-date"><?= date('d/m/Y', strtotime($recentPost['published_at'] ?? $recentPost['created_at'])) ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </aside>
     </div>
 </div>
