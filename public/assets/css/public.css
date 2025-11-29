@@ -94,6 +94,31 @@ main {
     gap: 24px;
 }
 
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.auth-btn {
+    width: 116px;
+    height: 42px;
+    border: 1px solid var(--black);
+    background: transparent;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.auth-btn:hover {
+    background: var(--black);
+    color: white;
+}
+
 .search-box {
     display: flex;
     align-items: center;
@@ -153,7 +178,7 @@ main {
 .nav-container {
     display: flex;
     justify-content: center;
-    padding: 24px 16px;
+    padding: 24px 16px 0;
 }
 
 .nav {
@@ -174,6 +199,11 @@ main {
         flex-direction: row;
         gap: 48px;
     }
+}
+
+.logo {
+    flex-shrink: 0;
+    display: block;
 }
 
 .logo img {
@@ -216,9 +246,9 @@ main {
 
 /* HERO DOGS SECTION */
 .hero-dogs {
-    background: var(--blue-light);
-    padding: 0;
-    margin: 0;
+    position: relative;
+    width: 100%;
+    padding: 12px 0;
 }
 
 .hero-dogs-wrapper {
@@ -229,60 +259,47 @@ main {
     flex-direction: column;
     align-items: center;
     position: relative;
-    padding-bottom: 40px;
+}
+
+.hero-image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 .dogs-image {
     width: 100%;
-    max-width: 600px;
+    max-width: 409px;
     height: auto;
     display: block;
-    margin: 0 auto;
 }
 
-.hero-dogs .hero-title-box {
-    position: relative;
-    bottom: auto;
-    left: auto;
-    transform: none;
-    margin-top: -30px;
-    width: 100%;
-    max-width: 444px;
-    padding: 0 16px;
-}
-
-.hero-dogs .hero-title-box-inner {
-    width: 100%;
-    max-width: 444px;
-    height: 69px;
+.hero-title-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     border: 2px solid #FFA500;
     border-radius: 20px;
-    padding: 10px 24px;
+    padding: 12px 32px;
     background: white;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    z-index: 10;
 }
 
-.hero-dogs .hero-title {
+.hero-title {
     color: var(--orange-accent);
-    font-size: 42px;
+    font-size: 32px;
     font-weight: 600;
-    line-height: 120%;
     text-align: center;
     margin: 0;
+    white-space: nowrap;
 }
 
-@media (max-width: 768px) {
-    .hero-dogs .hero-title {
-        font-size: 28px;
-    }
-    
-    .hero-dogs .hero-title-box-inner {
-        height: auto;
-        padding: 12px 20px;
+@media (min-width: 1024px) {
+    .hero-title {
+        font-size: 42px;
     }
 }
 
