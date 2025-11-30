@@ -8,15 +8,19 @@ unset($_SESSION['old_input']);
     <div class="container-xl">
         <div class="row g-2 align-items-center">
             <div class="col">
+                <div class="page-pretitle">
+                    Quản lý nội dung
+                </div>
                 <h2 class="page-title">
                     <?= $isEdit ? 'Chỉnh sửa bài viết' : 'Thêm bài viết mới' ?>
                 </h2>
             </div>
             <div class="col-auto ms-auto d-print-none">
-                <a href="<?= BASE_URL ?>admin/posts" class="btn btn-ghost-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                    Quay lại
-                </a>
+                <div class="btn-list">
+                    <a href="<?= BASE_URL ?>admin/posts" class="btn">
+                        Quay lại
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -121,10 +125,12 @@ unset($_SESSION['old_input']);
                             <?php endif; ?>
                         </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                                <?= $isEdit ? 'Cập nhật' : 'Tạo bài viết' ?>
-                            </button>
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary ms-auto">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>
+                                    <?= $isEdit ? 'Cập nhật' : 'Tạo bài viết' ?>
+                                </button>
+                            </div>
                         </div>
                     </div>
 

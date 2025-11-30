@@ -2,17 +2,15 @@
 namespace App\Controllers\Admin;
 
 use Core\Controller;
+use Core\Auth;
 use App\Models\PostComment;
 
 class CommentController extends Controller
 {
     public function __construct()
     {
-        // Check admin authentication
-        if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'admin') {
-            header('Location: ' . BASE_URL . 'login');
-            exit;
-        }
+        // Check admin authentication using Auth class
+        Auth::requireAdmin();
     }
 
     /**

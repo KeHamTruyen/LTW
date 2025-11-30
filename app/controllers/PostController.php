@@ -80,18 +80,28 @@ class PostController extends Controller
 
         // Get approved comments
         $comments = PostComment::getByPost($post['id'], ['status' => 'approved']);
+        $commentCount = count($comments);
         
         // Get rating stats
         $avgRating = PostComment::getAverageRating($post['id']);
         $ratingCount = PostComment::getRatingCount($post['id']);
 
-        // Render view
+        // Get prev/next posts
+        $prevPost = Post::getPrevious($post['id'], $post['published_at']);
+        $nextPost = Post::getNext($post['id'], $post['published_at']);
+
+        // Render view with public layout
         $this->view('posts/show', [
             'post' => $post,
             'comments' => $comments,
+            'commentCount' => $commentCount,
             'avgRating' => $avgRating,
             'ratingCount' => $ratingCount,
-        ], $post['title']);
+            'prevPost' => $prevPost,
+            'nextPost' => $nextPost,
+            'activeMenu' => 'blog',
+            'hideBlogHero' => true, // Hide the hero section with 4 dogs
+        ], $post['title'], 'public');
     }
 
     /**

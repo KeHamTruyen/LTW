@@ -38,15 +38,17 @@
             <?php else: ?>
                 <div class="blog-grid">
                     <?php foreach ($posts as $post): ?>
-                        <div class="blog-card">
-                            <?php if ($post['cover_image_url']): ?>
-                                <img src="<?= BASE_URL ?>uploads/<?= htmlspecialchars($post['cover_image_url']) ?>" 
-                                     class="blog-card-image" 
-                                     alt="<?= htmlspecialchars($post['title']) ?>">
-                            <?php else: ?>
-                                <div class="blog-card-image"></div>
-                            <?php endif; ?>
-                            
+                        <?php $hasImage = !empty($post['cover_image_url']); ?>
+                        <div class="blog-card <?= $hasImage ? '' : 'no-image' ?>">
+                            <div class="blog-card-image-wrapper">
+                                <?php if ($hasImage): ?>
+                                    <img src="<?= BASE_URL ?>uploads/<?= htmlspecialchars($post['cover_image_url']) ?>"
+                                         class="blog-card-image"
+                                         alt="<?= htmlspecialchars($post['title']) ?>">
+                                <?php else: ?>
+                                    <div class="blog-card-image blog-card-image--placeholder"></div>
+                                <?php endif; ?>
+                            </div>
                             <div class="blog-card-content">
                                 <h3 class="blog-card-title"><?= htmlspecialchars($post['title']) ?></h3>
                                 <p class="blog-card-excerpt">

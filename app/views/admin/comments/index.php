@@ -9,12 +9,12 @@ if (!isset($_SESSION['csrf'])) {
     <div class="container-xl">
         <div class="row g-2 align-items-center">
             <div class="col">
-                <h2 class="page-title">
-                    Quản lý bình luận
-                </h2>
-                <div class="text-secondary mt-1">
-                    Tổng: <?= $totalComments ?> bình luận
+                <div class="page-pretitle">
+                    Quản lý nội dung
                 </div>
+                <h2 class="page-title">
+                    Bình luận & đánh giá
+                </h2>
             </div>
         </div>
     </div>
@@ -41,39 +41,37 @@ if (!isset($_SESSION['csrf'])) {
 
         <div class="card">
             <div class="card-header">
-                <!-- Filter tabs -->
-                <ul class="nav nav-tabs card-header-tabs">
+                <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
                     <li class="nav-item">
-                        <a class="nav-link <?= empty($status) ? 'active' : '' ?>" 
-                           href="<?= BASE_URL ?>admin/comments">
+                        <a href="<?= BASE_URL ?>admin/comments" class="nav-link <?= empty($status) ? 'active' : '' ?>">
                             Tất cả
                             <span class="badge bg-secondary ms-2"><?= $totalComments ?></span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= $status === 'pending' ? 'active' : '' ?>" 
-                           href="<?= BASE_URL ?>admin/comments?status=pending">
+                        <a href="<?= BASE_URL ?>admin/comments?status=pending" class="nav-link <?= $status === 'pending' ? 'active' : '' ?>">
                             Chờ duyệt
-                            <span class="badge bg-warning ms-2"><?= $pendingCount ?></span>
+                            <?php if ($pendingCount > 0): ?>
+                                <span class="badge bg-yellow text-yellow-fg ms-2"><?= $pendingCount ?></span>
+                            <?php else: ?>
+                                <span class="badge bg-secondary ms-2"><?= $pendingCount ?></span>
+                            <?php endif; ?>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= $status === 'approved' ? 'active' : '' ?>" 
-                           href="<?= BASE_URL ?>admin/comments?status=approved">
+                        <a href="<?= BASE_URL ?>admin/comments?status=approved" class="nav-link <?= $status === 'approved' ? 'active' : '' ?>">
                             Đã duyệt
                             <span class="badge bg-success ms-2"><?= $approvedCount ?></span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= $status === 'rejected' ? 'active' : '' ?>" 
-                           href="<?= BASE_URL ?>admin/comments?status=rejected">
+                        <a href="<?= BASE_URL ?>admin/comments?status=rejected" class="nav-link <?= $status === 'rejected' ? 'active' : '' ?>">
                             Từ chối
-                            <span class="badge bg-danger ms-2"><?= $rejectedCount ?></span>
+                            <span class="badge bg-red ms-2"><?= $rejectedCount ?></span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= $status === 'spam' ? 'active' : '' ?>" 
-                           href="<?= BASE_URL ?>admin/comments?status=spam">
+                        <a href="<?= BASE_URL ?>admin/comments?status=spam" class="nav-link <?= $status === 'spam' ? 'active' : '' ?>">
                             Spam
                             <span class="badge bg-dark ms-2"><?= $spamCount ?></span>
                         </a>
@@ -85,9 +83,12 @@ if (!isset($_SESSION['csrf'])) {
                 <div class="card-body">
                     <div class="empty">
                         <div class="empty-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 9h8" /><path d="M8 13h6" /><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" /></svg>
                         </div>
-                        <p class="empty-title">Không có bình luận</p>
+                        <p class="empty-title">Không có bình luận nào</p>
+                        <p class="empty-subtitle text-secondary">
+                            Chưa có bình luận nào trong danh mục này
+                        </p>
                     </div>
                 </div>
             <?php else: ?>
@@ -111,9 +112,9 @@ if (!isset($_SESSION['csrf'])) {
                                         <!-- Status badge -->
                                         <?php
                                         $statusBadges = [
-                                            'pending' => '<span class="badge bg-warning ms-2">Chờ duyệt</span>',
+                                            'pending' => '<span class="badge bg-yellow text-yellow-fg ms-2">Chờ duyệt</span>',
                                             'approved' => '<span class="badge bg-success ms-2">Đã duyệt</span>',
-                                            'rejected' => '<span class="badge bg-danger ms-2">Từ chối</span>',
+                                            'rejected' => '<span class="badge bg-red ms-2">Từ chối</span>',
                                             'spam' => '<span class="badge bg-dark ms-2">Spam</span>',
                                         ];
                                         echo $statusBadges[$comment['status']] ?? '';
@@ -151,48 +152,50 @@ if (!isset($_SESSION['csrf'])) {
 
                                     <!-- Actions -->
                                     <div class="mt-3">
-                                        <?php if ($comment['status'] !== 'approved'): ?>
-                                            <form action="<?= BASE_URL ?>admin/comments/approve" method="POST" style="display: inline;">
+                                        <div class="btn-list">
+                                            <?php if ($comment['status'] !== 'approved'): ?>
+                                                <form action="<?= BASE_URL ?>admin/comments/approve" method="POST" style="display: inline;">
+                                                    <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
+                                                    <input type="hidden" name="id" value="<?= $comment['id'] ?>">
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
+                                                        Duyệt
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+
+                                            <?php if ($comment['status'] !== 'rejected'): ?>
+                                                <form action="<?= BASE_URL ?>admin/comments/reject" method="POST" style="display: inline;">
+                                                    <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
+                                                    <input type="hidden" name="id" value="<?= $comment['id'] ?>">
+                                                    <button type="submit" class="btn btn-warning btn-sm">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                                                        Từ chối
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+
+                                            <?php if ($comment['status'] !== 'spam'): ?>
+                                                <form action="<?= BASE_URL ?>admin/comments/spam" method="POST" style="display: inline;">
+                                                    <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
+                                                    <input type="hidden" name="id" value="<?= $comment['id'] ?>">
+                                                    <button type="submit" class="btn btn-secondary btn-sm">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" /></svg>
+                                                        Spam
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+
+                                            <form action="<?= BASE_URL ?>admin/comments/delete" method="POST" style="display: inline;">
                                                 <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
                                                 <input type="hidden" name="id" value="<?= $comment['id'] ?>">
-                                                <button type="submit" class="btn btn-sm btn-success">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                                    Duyệt
+                                                <button type="submit" class="btn btn-danger btn-sm" 
+                                                        onclick="return confirm('Bạn có chắc muốn xóa bình luận này?')">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                                                    Xóa
                                                 </button>
                                             </form>
-                                        <?php endif; ?>
-
-                                        <?php if ($comment['status'] !== 'rejected'): ?>
-                                            <form action="<?= BASE_URL ?>admin/comments/reject" method="POST" style="display: inline;">
-                                                <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
-                                                <input type="hidden" name="id" value="<?= $comment['id'] ?>">
-                                                <button type="submit" class="btn btn-sm btn-warning">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                                                    Từ chối
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
-
-                                        <?php if ($comment['status'] !== 'spam'): ?>
-                                            <form action="<?= BASE_URL ?>admin/comments/spam" method="POST" style="display: inline;">
-                                                <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
-                                                <input type="hidden" name="id" value="<?= $comment['id'] ?>">
-                                                <button type="submit" class="btn btn-sm btn-secondary">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18l-1.5 15H4.5L3 6z"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-                                                    Spam
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
-
-                                        <form action="<?= BASE_URL ?>admin/comments/delete" method="POST" style="display: inline;">
-                                            <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
-                                            <input type="hidden" name="id" value="<?= $comment['id'] ?>">
-                                            <button type="submit" class="btn btn-sm btn-danger" 
-                                                    onclick="return confirm('Bạn có chắc muốn xóa bình luận này?')">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                                                Xóa
-                                            </button>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

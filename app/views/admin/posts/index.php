@@ -9,18 +9,23 @@ if (!isset($_SESSION['csrf'])) {
     <div class="container-xl">
         <div class="row g-2 align-items-center">
             <div class="col">
-                <h2 class="page-title">
-                    Quản lý tin tức
-                </h2>
-                <div class="text-secondary mt-1">
-                    Tìm thấy <?= $totalPosts ?> bài viết
+                <div class="page-pretitle">
+                    Quản lý nội dung
                 </div>
+                <h2 class="page-title">
+                    Tin tức
+                </h2>
             </div>
             <div class="col-auto ms-auto d-print-none">
-                <a href="<?= BASE_URL ?>admin/posts/create" class="btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-                    Thêm bài viết mới
-                </a>
+                <div class="btn-list">
+                    <a href="<?= BASE_URL ?>admin/posts/create" class="btn btn-primary d-none d-sm-inline-block">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                        Thêm bài viết mới
+                    </a>
+                    <a href="<?= BASE_URL ?>admin/posts/create" class="btn btn-primary d-sm-none btn-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -47,106 +52,133 @@ if (!isset($_SESSION['csrf'])) {
 
         <div class="card">
             <div class="card-header">
-                <div class="row w-100">
-                    <!-- Search form -->
-                    <div class="col-md-6">
+                <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs">
+                    <li class="nav-item">
+                        <a href="<?= BASE_URL ?>admin/posts" class="nav-link <?= empty($status) ? 'active' : '' ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 11l-4 4l4 4m-4 -4h11a4 4 0 0 0 0 -8h-1" /></svg>
+                            Tất cả
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= BASE_URL ?>admin/posts?status=published" class="nav-link <?= $status === 'published' ? 'active' : '' ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
+                            Đã xuất bản
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= BASE_URL ?>admin/posts?status=draft" class="nav-link <?= $status === 'draft' ? 'active' : '' ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" /><path d="M12 12l8 -4.5" /><path d="M12 12l0 9" /><path d="M12 12l-8 -4.5" /></svg>
+                            Nháp
+                        </a>
+                    </li>
+                    <li class="nav-item ms-auto">
                         <form action="<?= BASE_URL ?>admin/posts" method="GET" class="d-flex">
-                            <input type="search" name="search" class="form-control me-2" 
-                                   placeholder="Tìm kiếm bài viết..." 
-                                   value="<?= htmlspecialchars($search) ?>">
-                            <button type="submit" class="btn btn-primary">Tìm</button>
+                            <div class="input-icon">
+                                <input type="search" name="search" class="form-control form-control-sm" 
+                                       placeholder="Tìm kiếm..." 
+                                       value="<?= htmlspecialchars($search) ?>"
+                                       style="min-width: 200px;">
+                                <span class="input-icon-addon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                                </span>
+                            </div>
                         </form>
-                    </div>
-
-                    <!-- Filter by status -->
-                    <div class="col-md-6">
-                        <ul class="nav nav-pills card-header-pills">
-                            <li class="nav-item">
-                                <a class="nav-link <?= empty($status) ? 'active' : '' ?>" 
-                                   href="<?= BASE_URL ?>admin/posts">
-                                    Tất cả
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= $status === 'published' ? 'active' : '' ?>" 
-                                   href="<?= BASE_URL ?>admin/posts?status=published">
-                                    Đã xuất bản
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link <?= $status === 'draft' ? 'active' : '' ?>" 
-                                   href="<?= BASE_URL ?>admin/posts?status=draft">
-                                    Nháp
-                                </a>
-                            </li>
-                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body border-bottom py-3">
+                <div class="d-flex">
+                    <div class="text-secondary">
+                        Hiển thị
+                        <span class="mx-2">
+                            <?php 
+                            $start = ($currentPage - 1) * 10 + 1;
+                            $end = min($currentPage * 10, $totalPosts);
+                            echo $start . ' - ' . $end;
+                            ?>
+                        </span>
+                        trong số <?= $totalPosts ?> bài viết
                     </div>
                 </div>
             </div>
 
             <div class="table-responsive">
-                <table class="table table-vcenter card-table">
+                <table class="table table-vcenter table-mobile-md card-table">
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th style="width: 80px;">Ảnh</th>
-                            <th>Tiêu đề</th>
+                            <th>Bài viết</th>
                             <th>Tác giả</th>
                             <th>Trạng thái</th>
                             <th>Ngày đăng</th>
-                            <th class="w-1">Thao tác</th>
+                            <th class="w-1"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($posts)): ?>
                             <tr>
-                                <td colspan="7" class="text-center text-secondary">
-                                    Không tìm thấy bài viết nào
+                                <td colspan="6" class="text-center">
+                                    <div class="empty">
+                                        <div class="empty-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 9l1 0" /><path d="M9 13l6 0" /><path d="M9 17l6 0" /></svg>
+                                        </div>
+                                        <p class="empty-title">Không tìm thấy bài viết nào</p>
+                                        <p class="empty-subtitle text-secondary">
+                                            Hãy thử điều chỉnh bộ lọc hoặc tìm kiếm của bạn
+                                        </p>
+                                        <div class="empty-action">
+                                            <a href="<?= BASE_URL ?>admin/posts/create" class="btn btn-primary">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                                                Thêm bài viết đầu tiên
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         <?php else: ?>
                             <?php foreach ($posts as $post): ?>
                                 <tr>
-                                    <td><?= $post['id'] ?></td>
                                     <td>
-                                        <?php if ($post['cover_image_url']): ?>
-                                            <img src="<?= BASE_URL ?>uploads/<?= htmlspecialchars($post['cover_image_url']) ?>" 
-                                                 alt="" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
-                                        <?php else: ?>
-                                            <div class="rounded bg-secondary-lt" style="width: 60px; height: 60px;"></div>
-                                        <?php endif; ?>
+                                        <span class="text-secondary">#<?= $post['id'] ?></span>
                                     </td>
                                     <td>
-                                        <div><?= htmlspecialchars($post['title']) ?></div>
-                                        <div class="text-secondary"><small><?= htmlspecialchars($post['slug']) ?></small></div>
+                                        <div class="d-flex py-1 align-items-center">
+                                            <span class="avatar me-2" style="background-image: url(<?= $post['cover_image_url'] ? BASE_URL . 'uploads/' . htmlspecialchars($post['cover_image_url']) : 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 200 200\'%3E%3Crect fill=\'%23e9ecef\' width=\'200\' height=\'200\'/%3E%3C/svg%3E' ?>)"></span>
+                                            <div class="flex-fill">
+                                                <div class="font-weight-medium"><?= htmlspecialchars($post['title']) ?></div>
+                                                <div class="text-secondary">
+                                                    <a href="<?= BASE_URL ?>posts/show?slug=<?= urlencode($post['slug']) ?>" class="text-reset" target="_blank"><?= htmlspecialchars($post['slug']) ?></a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td class="text-secondary">
-                                        <?= htmlspecialchars($post['author_name'] ?? 'N/A') ?>
+                                    <td>
+                                        <div class="text-secondary"><?= htmlspecialchars($post['author_name'] ?? 'N/A') ?></div>
                                     </td>
                                     <td>
                                         <?php if ($post['status'] === 'published'): ?>
-                                            <span class="badge bg-success">Đã xuất bản</span>
+                                            <span class="badge bg-success me-1"></span> Đã xuất bản
                                         <?php else: ?>
-                                            <span class="badge bg-secondary">Nháp</span>
+                                            <span class="badge bg-secondary me-1"></span> Nháp
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-secondary">
-                                        <?= date('d/m/Y H:i', strtotime($post['published_at'] ?? $post['created_at'])) ?>
+                                        <?= date('d/m/Y', strtotime($post['published_at'] ?? $post['created_at'])) ?>
                                     </td>
                                     <td>
-                                        <div class="btn-list flex-nowrap">
+                                        <div class="btn-list flex-nowrap justify-content-end">
                                             <a href="<?= BASE_URL ?>posts/show?slug=<?= urlencode($post['slug']) ?>" 
-                                               class="btn btn-sm btn-ghost-primary" target="_blank" title="Xem">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                               class="btn btn-icon btn-ghost-secondary" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="Xem">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
                                             </a>
                                             <a href="<?= BASE_URL ?>admin/posts/edit?id=<?= $post['id'] ?>" 
-                                               class="btn btn-sm btn-primary" title="Sửa">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                               class="btn btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Chỉnh sửa">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                             </a>
-                                            <button type="button" class="btn btn-sm btn-danger" 
-                                                    onclick="deletePost(<?= $post['id'] ?>, '<?= htmlspecialchars(addslashes($post['title'])) ?>')" 
-                                                    title="Xóa">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                            <button type="button" class="btn btn-icon btn-ghost-danger" 
+                                                    onclick="deletePost(<?= $post['id'] ?>, '<?= htmlspecialchars(addslashes($post['title'])) ?>')"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Xóa">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
                                             </button>
                                         </div>
                                     </td>

@@ -255,4 +255,54 @@ class Post
         $stmt->execute($params);
         return $stmt->fetchColumn() > 0;
     }
+
+    /**
+     * Get previous published post
+     * @param int $id
+     * @param string $publishedAt
+     * @return array|null
+     */
+    public static function getPrevious(int $id, string $publishedAt): ?array
+    {
+        $sql = "SELECT id, title, slug 
+                FROM posts 
+                WHERE status = 'published' 
+                AND (published_at < :published_at OR (published_at = :published_at2 AND id < :id))
+                ORDER BY published_at DESC, id DESC 
+                LIMIT 1";
+        
+        $stmt = Database::conn()->prepare($sql);
+        $stmt->execute([
+            ':id' => $id,
+            ':published_at' => $publishedAt,
+            ':published_at2' => $publishedAt
+        ]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    /**
+     * Get next published post
+     * @param int $id
+     * @param string $publishedAt
+     * @return array|null
+     */
+    public static function getNext(int $id, string $publishedAt): ?array
+    {
+        $sql = "SELECT id, title, slug 
+                FROM posts 
+                WHERE status = 'published' 
+                AND (published_at > :published_at OR (published_at = :published_at2 AND id > :id))
+                ORDER BY published_at ASC, id ASC 
+                LIMIT 1";
+        
+        $stmt = Database::conn()->prepare($sql);
+        $stmt->execute([
+            ':id' => $id,
+            ':published_at' => $publishedAt,
+            ':published_at2' => $publishedAt
+        ]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
 }

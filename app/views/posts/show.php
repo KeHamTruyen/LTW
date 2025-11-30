@@ -1,212 +1,106 @@
-<?php
-// Generate CSRF token for comment form
-if (!isset($_SESSION['csrf'])) {
-    $_SESSION['csrf'] = bin2hex(random_bytes(32));
-}
-?>
-
-<div class="container-xl">
-    <!-- Back button -->
-    <div class="page-header d-print-none">
-        <div class="row g-2 align-items-center">
-            <div class="col">
-                <a href="<?= BASE_URL ?>posts" class="btn btn-ghost-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                    Quay lại danh sách
-                </a>
+<!-- Blog Hero Section -->
+<section class="blog-hero">
+    <div class="blog-detail-container">
+        <h1 class="blog-hero-title"><?= htmlspecialchars($post['title']) ?></h1>
+        <div class="blog-meta">
+            <div class="blog-meta-item">
+                <span>👤 <?= htmlspecialchars($post['author_name'] ?? 'Admin') ?></span>
+            </div>
+            <div class="blog-meta-item">
+                <span>📅 <?= date('d/m/Y', strtotime($post['published_at'] ?? $post['created_at'])) ?></span>
+            </div>
+            <div class="blog-meta-item">
+                <span>⏱️ <?= ceil(str_word_count(strip_tags($post['content_html'])) / 200) ?> phút đọc</span>
+            </div>
+            <div class="blog-meta-item">
+                <span>💬 <?= $commentCount ?> bình luận</span>
             </div>
         </div>
+        <div class="blog-hero-divider"></div>
     </div>
+</section>
 
-    <div class="page-body">
-        <div class="row">
-            <!-- Main content -->
-            <div class="col-lg-8">
-                <div class="card">
-                    <?php if ($post['cover_image_url']): ?>
-                        <img src="<?= BASE_URL ?>uploads/<?= htmlspecialchars($post['cover_image_url']) ?>" 
-                             class="card-img-top" 
-                             alt="<?= htmlspecialchars($post['title']) ?>"
-                             style="max-height: 400px; object-fit: cover;">
+<!-- Blog Article -->
+<div class="blog-detail-container">
+    <article class="blog-article">
+                <?php if ($post['cover_image_url']): ?>
+                    <img src="<?= BASE_URL ?>uploads/<?= htmlspecialchars($post['cover_image_url']) ?>" 
+                         alt="<?= htmlspecialchars($post['title']) ?>"
+                         class="blog-article-image">
+                <?php endif; ?>
+
+                <div class="blog-article-content">
+                    <?= $post['content_html'] ?>
+                </div>
+
+                <!-- Contact Box -->
+                <div class="blog-contact-box">
+                    <p class="blog-contact-title">Nếu bạn là người bận rộn, thường không có nhiều thời gian quan tâm đến vật nuôi thì hãy liên hệ ngay cho PET SERVICE – Dịch vụ thú cưng tại nhà thông qua:</p>
+                    <div class="blog-contact-info">
+                        <p><strong>Hotline:</strong> <a href="tel:0898520760">0898 520 760</a></p>
+                        <p><strong>Address:</strong> 217 Lâm Văn Bền, Phường Bình Thuận, Quận 7</p>
+                        <p><strong>Facebook:</strong> <a href="https://www.facebook.com/petserviceclub/">https://www.facebook.com/petserviceclub/</a></p>
+                    </div>
+                    <p class="blog-contact-tagline">PET SERVICE - TRỌN VẸN TRẢI NGHIỆM</p>
+                    <p class="blog-contact-services">Những dịch vụ mà PET SERVICE đáp ứng: <a href="#">Dịch vụ thú y tại nhà</a>, <a href="#">Dịch vụ cắt tỉa lông tại nhà</a>, <a href="#">Dịch vụ tắm cho cún tại nhà</a>, <a href="#">Dịch vụ đặt cọc đi dạo...</a></p>
+                </div>
+
+                <!-- Social Share -->
+                <div class="blog-social-share">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode(BASE_URL . 'posts/show?slug=' . $post['slug']) ?>" 
+                       target="_blank" 
+                       class="blog-social-facebook">
+                        📘 Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url=<?= urlencode(BASE_URL . 'posts/show?slug=' . $post['slug']) ?>&text=<?= urlencode($post['title']) ?>" 
+                       target="_blank" 
+                       class="blog-social-twitter">
+                        🐦 Twitter
+                    </a>
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&url=<?= urlencode(BASE_URL . 'posts/show?slug=' . $post['slug']) ?>&title=<?= urlencode($post['title']) ?>" 
+                       target="_blank" 
+                       class="blog-social-linkedin">
+                        💼 LinkedIn
+                    </a>
+                    <a href="https://pinterest.com/pin/create/button/?url=<?= urlencode(BASE_URL . 'posts/show?slug=' . $post['slug']) ?>&description=<?= urlencode($post['title']) ?>" 
+                       target="_blank" 
+                       class="blog-social-pinterest">
+                        📌 Pinterest
+                    </a>
+                </div>
+
+                <!-- Author Bio -->
+                <div class="blog-author-bio">
+                    <div class="blog-author-avatar">👤</div>
+                    <div class="blog-author-info">
+                        <h3 class="blog-author-name"><?= htmlspecialchars($post['author_name'] ?? 'Admin') ?></h3>
+                        <p>Chuyên gia chăm sóc thú cưng với hơn 10 năm kinh nghiệm. Đam mê chia sẻ kiến thức và kinh nghiệm nuôi dưỡng, chăm sóc thú cưng khỏe mạnh và hạnh phúc.</p>
+                    </div>
+                </div>
+
+                <!-- Post Navigation -->
+                <?php if ($prevPost || $nextPost): ?>
+                <div class="blog-post-nav">
+                    <?php if ($prevPost): ?>
+                        <a href="<?= BASE_URL ?>posts/show?slug=<?= $prevPost['slug'] ?>" class="blog-nav-link">
+                            <div>
+                                <div class="blog-nav-label">BÀI TRƯỚC</div>
+                                <div class="blog-nav-text"><?= htmlspecialchars($prevPost['title']) ?></div>
+                            </div>
+                        </a>
+                    <?php else: ?>
+                        <div></div>
                     <?php endif; ?>
-                    
-                    <div class="card-body">
-                        <h1 class="card-title"><?= htmlspecialchars($post['title']) ?></h1>
-                        
-                        <div class="text-secondary mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-                            <?= htmlspecialchars($post['author_name'] ?? 'Admin') ?>
-                            &nbsp;•&nbsp;
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
-                            <?= date('d/m/Y H:i', strtotime($post['published_at'] ?? $post['created_at'])) ?>
-                        </div>
 
-                        <?php if ($post['summary']): ?>
-                            <div class="alert alert-info">
-                                <strong>Tóm tắt:</strong> <?= htmlspecialchars($post['summary']) ?>
+                    <?php if ($nextPost): ?>
+                        <a href="<?= BASE_URL ?>posts/show?slug=<?= $nextPost['slug'] ?>" class="blog-nav-link blog-nav-link-next">
+                            <div>
+                                <div class="blog-nav-label">BÀI TIẾP</div>
+                                <div class="blog-nav-text"><?= htmlspecialchars($nextPost['title']) ?></div>
                             </div>
-                        <?php endif; ?>
-
-                        <div class="markdown">
-                            <?= $post['content_html'] ?>
-                        </div>
-                    </div>
+                        </a>
+                    <?php endif; ?>
                 </div>
-
-                <!-- Comments section -->
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            Bình luận (<?= count($comments) ?>)
-                            <?php if ($ratingCount > 0): ?>
-                                <span class="badge bg-yellow ms-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                    <?= number_format($avgRating, 1) ?> / 5
-                                </span>
-                            <?php endif; ?>
-                        </h3>
-                    </div>
-                    <div class="card-body">
-                        <!-- Flash messages -->
-                        <?php if (isset($_SESSION['flash_success'])): ?>
-                            <div class="alert alert-success alert-dismissible">
-                                <?= htmlspecialchars($_SESSION['flash_success']) ?>
-                                <a class="btn-close" data-bs-dismiss="alert"></a>
-                            </div>
-                            <?php unset($_SESSION['flash_success']); ?>
-                        <?php endif; ?>
-
-                        <?php if (isset($_SESSION['flash_error'])): ?>
-                            <div class="alert alert-danger alert-dismissible">
-                                <?= $_SESSION['flash_error'] ?>
-                                <a class="btn-close" data-bs-dismiss="alert"></a>
-                            </div>
-                            <?php unset($_SESSION['flash_error']); ?>
-                        <?php endif; ?>
-
-                        <!-- Comment form -->
-                        <form action="<?= BASE_URL ?>posts/comment" method="POST" class="mb-4">
-                            <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
-                            <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-
-                            <div class="mb-3">
-                                <label class="form-label">Đánh giá</label>
-                                <div class="form-selectgroup">
-                                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                                        <label class="form-selectgroup-item">
-                                            <input type="radio" name="rating" value="<?= $i ?>" class="form-selectgroup-input">
-                                            <span class="form-selectgroup-label">
-                                                <?= str_repeat('⭐', $i) ?>
-                                            </span>
-                                        </label>
-                                    <?php endfor; ?>
-                                </div>
-                            </div>
-
-                            <?php if (!isset($_SESSION['user_id'])): ?>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label required">Tên của bạn</label>
-                                            <input type="text" name="author_name" class="form-control" required minlength="2">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label required">Email</label>
-                                            <input type="email" name="author_email" class="form-control" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-
-                            <div class="mb-3">
-                                <label class="form-label required">Bình luận</label>
-                                <textarea name="content" class="form-control" rows="4" required minlength="10" maxlength="1000" placeholder="Nhập bình luận của bạn..."></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">
-                                Gửi bình luận
-                            </button>
-                        </form>
-
-                        <!-- Comments list -->
-                        <?php if (empty($comments)): ?>
-                            <p class="text-secondary">Chưa có bình luận nào. Hãy là người đầu tiên bình luận!</p>
-                        <?php else: ?>
-                            <div class="list-group list-group-flush">
-                                <?php foreach ($comments as $comment): ?>
-                                    <div class="list-group-item">
-                                        <div class="row align-items-start">
-                                            <div class="col-auto">
-                                                <span class="avatar" style="background-image: url(https://ui-avatars.com/api/?name=<?= urlencode($comment['author_name'] ?? $comment['user_name'] ?? 'User') ?>&background=random)"></span>
-                                            </div>
-                                            <div class="col">
-                                                <div class="d-flex align-items-center">
-                                                    <strong><?= htmlspecialchars($comment['author_name'] ?? $comment['user_name'] ?? 'Ẩn danh') ?></strong>
-                                                    <?php if ($comment['rating']): ?>
-                                                        <span class="badge bg-yellow ms-2">
-                                                            <?= str_repeat('⭐', (int)$comment['rating']) ?>
-                                                        </span>
-                                                    <?php endif; ?>
-                                                    <small class="text-secondary ms-auto">
-                                                        <?= date('d/m/Y H:i', strtotime($comment['created_at'])) ?>
-                                                    </small>
-                                                </div>
-                                                <div class="text-secondary mt-1">
-                                                    <?= nl2br(htmlspecialchars($comment['content'])) ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Thông tin bài viết</h3>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item">
-                            <div class="row">
-                                <div class="col">Trạng thái:</div>
-                                <div class="col-auto">
-                                    <span class="badge bg-success">Đã xuất bản</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="list-group-item">
-                            <div class="row">
-                                <div class="col">Tác giả:</div>
-                                <div class="col-auto"><?= htmlspecialchars($post['author_name'] ?? 'Admin') ?></div>
-                            </div>
-                        </div>
-                        <div class="list-group-item">
-                            <div class="row">
-                                <div class="col">Ngày đăng:</div>
-                                <div class="col-auto"><?= date('d/m/Y', strtotime($post['published_at'] ?? $post['created_at'])) ?></div>
-                            </div>
-                        </div>
-                        <?php if ($ratingCount > 0): ?>
-                            <div class="list-group-item">
-                                <div class="row">
-                                    <div class="col">Đánh giá:</div>
-                                    <div class="col-auto">
-                                        <strong><?= number_format($avgRating, 1) ?>/5</strong>
-                                        <small class="text-secondary">(<?= $ratingCount ?> lượt)</small>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+                <?php endif; ?>
+            </article>
 </div>

@@ -78,7 +78,8 @@
         </nav>
     </div>
 
-    <!-- HERO WITH 4 DOGS -->
+    <!-- HERO WITH 4 DOGS - Only show on blog listing page, not on blog detail -->
+    <?php if (!isset($hideBlogHero) || !$hideBlogHero): ?>
     <section class="hero-dogs">
         <div class="hero-dogs-wrapper">
             <div class="hero-image-container">
@@ -90,6 +91,7 @@
             </div>
         </div>
     </section>
+    <?php endif; ?>
 
     <!-- CONTENT -->
     <main>
