@@ -32,7 +32,7 @@ class CommentController extends Controller
             'offset' => $offset,
         ];
 
-        if (!empty($status) && in_array($status, ['pending', 'approved', 'rejected', 'spam'])) {
+        if (!empty($status) && in_array($status, ['pending', 'approved', 'rejected'])) {
             $filters['status'] = $status;
         }
 
@@ -48,7 +48,6 @@ class CommentController extends Controller
         $pendingCount = PostComment::count(['status' => 'pending']);
         $approvedCount = PostComment::count(['status' => 'approved']);
         $rejectedCount = PostComment::count(['status' => 'rejected']);
-        $spamCount = PostComment::count(['status' => 'spam']);
 
         $this->view('admin/comments/index', [
             'comments' => $comments,
@@ -59,7 +58,6 @@ class CommentController extends Controller
             'pendingCount' => $pendingCount,
             'approvedCount' => $approvedCount,
             'rejectedCount' => $rejectedCount,
-            'spamCount' => $spamCount,
         ], 'Quản lý bình luận', 'admin');
     }
 
@@ -129,43 +127,6 @@ class CommentController extends Controller
         try {
             PostComment::updateStatus($id, 'rejected');
             $_SESSION['flash_success'] = 'Đã từ chối bình luận';
-        } catch (\Exception $e) {
-            $_SESSION['flash_error'] = 'Có lỗi xảy ra';
-        }
-
-        header('Location: ' . $_SERVER['HTTP_REFERER'] ?? BASE_URL . 'admin/comments');
-        exit;
-    }
-
-    /**
-     * Mark as spam
-     */
-    public function spam()
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: ' . BASE_URL . 'admin/comments');
-            exit;
-        }
-
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
-
-        // CSRF check
-        if (!isset($_POST['csrf']) || $_POST['csrf'] !== ($_SESSION['csrf'] ?? '')) {
-            $_SESSION['flash_error'] = 'Token bảo mật không hợp lệ';
-            header('Location: ' . BASE_URL . 'admin/comments');
-            exit;
-        }
-
-        $comment = PostComment::findById($id);
-        if (!$comment) {
-            $_SESSION['flash_error'] = 'Bình luận không tồn tại';
-            header('Location: ' . BASE_URL . 'admin/comments');
-            exit;
-        }
-
-        try {
-            PostComment::updateStatus($id, 'spam');
-            $_SESSION['flash_success'] = 'Đã đánh dấu spam';
         } catch (\Exception $e) {
             $_SESSION['flash_error'] = 'Có lỗi xảy ra';
         }

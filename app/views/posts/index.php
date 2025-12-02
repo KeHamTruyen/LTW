@@ -99,27 +99,15 @@
             <div class="filter-section">
                 <div class="filter-title">Danh mục</div>
                 <div class="filter-list">
-                    <div class="filter-item">
-                        <label class="filter-checkbox-label">
-                            <input type="checkbox" class="filter-checkbox">
-                            <span class="filter-text">Chia sẻ kinh nghiệm</span>
-                        </label>
-                        <span class="count-badge">21</span>
-                    </div>
-                    <div class="filter-item">
-                        <label class="filter-checkbox-label">
-                            <input type="checkbox" class="filter-checkbox">
-                            <span class="filter-text">Gióc giải trí</span>
-                        </label>
-                        <span class="count-badge">28</span>
-                    </div>
-                    <div class="filter-item">
-                        <label class="filter-checkbox-label">
-                            <input type="checkbox" class="filter-checkbox">
-                            <span class="filter-text">Dịch vụ tại nhà</span>
-                        </label>
-                        <span class="count-badge">12</span>
-                    </div>
+                    <?php foreach ($categories as $category): ?>
+                        <div class="filter-item">
+                            <label class="filter-checkbox-label">
+                                <input type="checkbox" class="filter-checkbox" disabled>
+                                <span class="filter-text"><?= htmlspecialchars($category['name']) ?></span>
+                            </label>
+                            <span class="count-badge"><?= $category['post_count'] ?></span>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
 

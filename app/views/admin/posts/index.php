@@ -108,6 +108,7 @@ if (!isset($_SESSION['csrf'])) {
                         <tr>
                             <th>ID</th>
                             <th>Bài viết</th>
+                            <th>Danh mục</th>
                             <th>Tác giả</th>
                             <th>Trạng thái</th>
                             <th>Ngày đăng</th>
@@ -117,7 +118,7 @@ if (!isset($_SESSION['csrf'])) {
                     <tbody>
                         <?php if (empty($posts)): ?>
                             <tr>
-                                <td colspan="6" class="text-center">
+                                <td colspan="7" class="text-center">
                                     <div class="empty">
                                         <div class="empty-icon">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 9l1 0" /><path d="M9 13l6 0" /><path d="M9 17l6 0" /></svg>
@@ -151,6 +152,13 @@ if (!isset($_SESSION['csrf'])) {
                                                 </div>
                                             </div>
                                         </div>
+                                    </td>
+                                    <td>
+                                        <?php if (!empty($post['category_name'])): ?>
+                                            <span class="badge bg-azure-lt"><?= htmlspecialchars($post['category_name']) ?></span>
+                                        <?php else: ?>
+                                            <span class="text-secondary">--</span>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <div class="text-secondary"><?= htmlspecialchars($post['author_name'] ?? 'N/A') ?></div>

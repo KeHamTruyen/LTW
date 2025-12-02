@@ -70,12 +70,6 @@ if (!isset($_SESSION['csrf'])) {
                             <span class="badge bg-red ms-2"><?= $rejectedCount ?></span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="<?= BASE_URL ?>admin/comments?status=spam" class="nav-link <?= $status === 'spam' ? 'active' : '' ?>">
-                            Spam
-                            <span class="badge bg-dark ms-2"><?= $spamCount ?></span>
-                        </a>
-                    </li>
                 </ul>
             </div>
 
@@ -115,7 +109,6 @@ if (!isset($_SESSION['csrf'])) {
                                             'pending' => '<span class="badge bg-yellow text-yellow-fg ms-2">Chờ duyệt</span>',
                                             'approved' => '<span class="badge bg-success ms-2">Đã duyệt</span>',
                                             'rejected' => '<span class="badge bg-red ms-2">Từ chối</span>',
-                                            'spam' => '<span class="badge bg-dark ms-2">Spam</span>',
                                         ];
                                         echo $statusBadges[$comment['status']] ?? '';
                                         ?>
@@ -171,17 +164,6 @@ if (!isset($_SESSION['csrf'])) {
                                                     <button type="submit" class="btn btn-warning btn-sm">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                                                         Từ chối
-                                                    </button>
-                                                </form>
-                                            <?php endif; ?>
-
-                                            <?php if ($comment['status'] !== 'spam'): ?>
-                                                <form action="<?= BASE_URL ?>admin/comments/spam" method="POST" style="display: inline;">
-                                                    <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?>">
-                                                    <input type="hidden" name="id" value="<?= $comment['id'] ?>">
-                                                    <button type="submit" class="btn btn-secondary btn-sm">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" /></svg>
-                                                        Spam
                                                     </button>
                                                 </form>
                                             <?php endif; ?>

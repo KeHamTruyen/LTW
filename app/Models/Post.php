@@ -13,9 +13,10 @@ class Post
      */
     public static function getAll(array $filters = []): array
     {
-        $sql = "SELECT p.*, u.name as author_name 
+        $sql = "SELECT p.*, u.name as author_name, c.name as category_name, c.slug as category_slug 
                 FROM posts p 
                 LEFT JOIN users u ON p.author_user_id = u.id 
+                LEFT JOIN categories c ON p.category_id = c.id
                 WHERE 1=1";
         $params = [];
 
@@ -93,9 +94,10 @@ class Post
      */
     public static function findById(int $id): ?array
     {
-        $sql = "SELECT p.*, u.name as author_name 
+        $sql = "SELECT p.*, u.name as author_name, c.name as category_name, c.slug as category_slug 
                 FROM posts p 
                 LEFT JOIN users u ON p.author_user_id = u.id 
+                LEFT JOIN categories c ON p.category_id = c.id
                 WHERE p.id = :id LIMIT 1";
         $stmt = Database::conn()->prepare($sql);
         $stmt->execute([':id' => $id]);
@@ -110,9 +112,10 @@ class Post
      */
     public static function findBySlug(string $slug): ?array
     {
-        $sql = "SELECT p.*, u.name as author_name 
+        $sql = "SELECT p.*, u.name as author_name, c.name as category_name, c.slug as category_slug 
                 FROM posts p 
                 LEFT JOIN users u ON p.author_user_id = u.id 
+                LEFT JOIN categories c ON p.category_id = c.id
                 WHERE p.slug = :slug LIMIT 1";
         $stmt = Database::conn()->prepare($sql);
         $stmt->execute([':slug' => $slug]);

@@ -4,6 +4,7 @@ namespace App\Controllers\Admin;
 use Core\Controller;
 use Core\Auth;
 use App\Models\Post;
+use App\Models\Category;
 
 class PostController extends Controller
 {
@@ -65,6 +66,7 @@ class PostController extends Controller
         $this->view('admin/posts/form', [
             'post' => null,
             'isEdit' => false,
+            'categories' => Category::getAll(),
         ], 'Thêm tin tức mới', 'admin');
     }
 
@@ -77,6 +79,11 @@ class PostController extends Controller
             header('Location: ' . BASE_URL . 'admin/posts');
             exit;
         }
+
+        // Debug log
+        error_log("=== STORE METHOD CALLED ===");
+        error_log("POST data: " . print_r($_POST, true));
+        error_log("FILES data: " . print_r($_FILES, true));
 
         // CSRF check
         if (!isset($_POST['csrf']) || $_POST['csrf'] !== ($_SESSION['csrf'] ?? '')) {
@@ -98,6 +105,7 @@ class PostController extends Controller
         // Handle image upload
         $coverImageUrl = null;
         if (!empty($_FILES['cover_image']['name'])) {
+            error_log("Processing cover image upload...");
             $uploadResult = $this->handleImageUpload($_FILES['cover_image']);
             if ($uploadResult['success']) {
                 $coverImageUrl = $uploadResult['filename'];
@@ -123,6 +131,7 @@ class PostController extends Controller
         // Prepare data
         $postData = [
             'author_user_id' => $_SESSION['user_id'],
+            'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
             'title' => trim($_POST['title']),
             'slug' => $slug,
             'summary' => trim($_POST['summary']),
@@ -164,6 +173,7 @@ class PostController extends Controller
         $this->view('admin/posts/form', [
             'post' => $post,
             'isEdit' => true,
+            'categories' => Category::getAll(),
         ], 'Chỉnh sửa tin tức', 'admin');
     }
 
@@ -209,7 +219,7 @@ class PostController extends Controller
             if ($uploadResult['success']) {
                 // Delete old image
                 if ($post['cover_image_url']) {
-                    $oldPath = __DIR__ . '/../../public/uploads/' . $post['cover_image_url'];
+                    $oldPath = dirname(__DIR__, 3) . '/public/uploads/' . $post['cover_image_url'];
                     if (file_exists($oldPath)) {
                         unlink($oldPath);
                     }
@@ -238,6 +248,7 @@ class PostController extends Controller
 
         // Prepare data
         $postData = [
+            'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
             'title' => trim($_POST['title']),
             'slug' => $slug,
             'summary' => trim($_POST['summary']),
@@ -288,7 +299,7 @@ class PostController extends Controller
 
         // Delete image file
         if ($post['cover_image_url']) {
-            $imagePath = __DIR__ . '/../../public/uploads/' . $post['cover_image_url'];
+            $imagePath = dirname(__DIR__, 3) . '/public/uploads/' . $post['cover_image_url'];
             if (file_exists($imagePath)) {
                 unlink($imagePath);
             }
@@ -344,18 +355,25 @@ class PostController extends Controller
      */
     private function handleImageUpload(array $file): array
     {
+        // Debug log
+        error_log("=== IMAGE UPLOAD DEBUG ===");
+        error_log("File data: " . print_r($file, true));
+        
         $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
         $maxSize = 5 * 1024 * 1024; // 5MB
 
         // Check errors
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            return ['success' => false, 'error' => 'Lỗi upload file'];
+            error_log("Upload error code: " . $file['error']);
+            return ['success' => false, 'error' => 'Lỗi upload file: ' . $file['error']];
         }
 
         // Check file type
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($finfo, $file['tmp_name']);
         finfo_close($finfo);
+        
+        error_log("MIME type: " . $mimeType);
 
         if (!in_array($mimeType, $allowedTypes)) {
             return ['success' => false, 'error' => 'Chỉ chấp nhận file ảnh JPG, PNG, WEBP'];
@@ -363,6 +381,7 @@ class PostController extends Controller
 
         // Check file size
         if ($file['size'] > $maxSize) {
+            error_log("File too large: " . $file['size']);
             return ['success' => false, 'error' => 'Kích thước file không được vượt quá 5MB'];
         }
 
@@ -371,18 +390,29 @@ class PostController extends Controller
         $filename = 'post_' . uniqid() . '_' . time() . '.' . $extension;
         
         // Create uploads directory if not exists
-        $uploadDir = __DIR__ . '/../../public/uploads/';
+        $uploadDir = dirname(__DIR__, 3) . '/public/uploads/';
+        error_log("Upload directory: " . $uploadDir);
+        error_log("Directory exists: " . (is_dir($uploadDir) ? 'yes' : 'no'));
+        
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
+            error_log("Created directory");
         }
 
         $uploadPath = $uploadDir . $filename;
+        error_log("Full upload path: " . $uploadPath);
+        error_log("Temp file exists: " . (file_exists($file['tmp_name']) ? 'yes' : 'no'));
 
         // Move uploaded file
-        if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
+        $moveResult = move_uploaded_file($file['tmp_name'], $uploadPath);
+        error_log("Move result: " . ($moveResult ? 'SUCCESS' : 'FAILED'));
+        
+        if (!$moveResult) {
+            error_log("Move failed. Last error: " . error_get_last()['message'] ?? 'no error');
             return ['success' => false, 'error' => 'Không thể lưu file'];
         }
-
+        
+        error_log("File saved successfully: " . $filename);
         return ['success' => true, 'filename' => $filename];
     }
 }

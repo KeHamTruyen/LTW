@@ -85,11 +85,12 @@ unset($_SESSION['old_input']);
                             <div class="mb-3">
                                 <label class="form-label required">Nội dung</label>
                                 <textarea name="content_html" 
+                                          id="content-editor"
                                           class="form-control" 
                                           rows="15" 
                                           required 
                                           minlength="50"><?= htmlspecialchars($oldInput['content_html'] ?? $post['content_html'] ?? '') ?></textarea>
-                                <small class="form-hint">Có thể sử dụng HTML để định dạng nội dung</small>
+                                <small class="form-hint">Sử dụng editor để chèn ảnh và định dạng nội dung</small>
                             </div>
                         </div>
                     </div>
@@ -97,6 +98,27 @@ unset($_SESSION['old_input']);
 
                 <!-- Sidebar -->
                 <div class="col-lg-4">
+                    <!-- Category -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh mục</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-0">
+                                <label class="form-label">Chọn danh mục</label>
+                                <select name="category_id" class="form-select">
+                                    <option value="">-- Không có --</option>
+                                    <?php foreach ($categories as $category): ?>
+                                        <option value="<?= $category['id'] ?>" 
+                                            <?= ($oldInput['category_id'] ?? $post['category_id'] ?? '') == $category['id'] ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($category['name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Status -->
                     <div class="card mb-3">
                         <div class="card-header">
@@ -167,3 +189,68 @@ unset($_SESSION['old_input']);
         </form>
     </div>
 </div>
+
+<!-- TinyMCE -->
+<script src="https://cdn.tiny.cloud/1/5cffpp4ort6x1v4xqnkxcqdfb9gu5vra7h7g696oy4mhad0g/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+tinymce.init({
+    selector: '#content-editor',
+    height: 500,
+    menubar: true,
+    plugins: [
+        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+    ],
+    toolbar: 'undo redo | blocks | ' +
+        'bold italic forecolor | alignleft aligncenter ' +
+        'alignright alignjustify | bullist numlist outdent indent | ' +
+        'removeformat | image link | code | help',
+    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+    images_upload_url: '<?= BASE_URL ?>admin/upload/image',
+    automatic_uploads: true,
+    images_reuse_filename: true,
+    file_picker_types: 'image',
+    images_upload_handler: function (blobInfo, progress) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.withCredentials = false;
+            xhr.open('POST', '<?= BASE_URL ?>admin/upload/image');
+
+            xhr.upload.onprogress = (e) => {
+                progress(e.loaded / e.total * 100);
+            };
+
+            xhr.onload = () => {
+                if (xhr.status === 403) {
+                    reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
+                    return;
+                }
+
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    reject('HTTP Error: ' + xhr.status);
+                    return;
+                }
+
+                const json = JSON.parse(xhr.responseText);
+
+                if (!json || typeof json.location != 'string') {
+                    reject('Invalid JSON: ' + xhr.responseText);
+                    return;
+                }
+
+                resolve(json.location);
+            };
+
+            xhr.onerror = () => {
+                reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+            };
+
+            const formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+            xhr.send(formData);
+        });
+    }
+});
+</script>

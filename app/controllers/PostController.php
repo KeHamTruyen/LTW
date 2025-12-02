@@ -4,6 +4,7 @@ namespace App\Controllers;
 use Core\Controller;
 use App\Models\Post;
 use App\Models\PostComment;
+use App\Models\Category;
 
 class PostController extends Controller
 {
@@ -46,6 +47,9 @@ class PostController extends Controller
         $totalPosts = Post::count($filters);
         $totalPages = ceil($totalPosts / $perPage);
 
+        // Get categories with post counts
+        $categories = Category::countPostsByCategory();
+
         // Render view with public layout
         $this->view('posts/index', [
             'posts' => $posts,
@@ -54,6 +58,7 @@ class PostController extends Controller
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalPosts' => $totalPosts,
+            'categories' => $categories,
             'activeMenu' => 'blog',
         ], 'Blog - Tin tức thú cưng', 'public');
     }

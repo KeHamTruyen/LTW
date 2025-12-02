@@ -1,4 +1,15 @@
 <?php
+// Set timezone
+date_default_timezone_set('Asia/Ho_Chi_Minh');
+
+// Start session
+session_start();
+
+// Generate CSRF token if not exists
+if (!isset($_SESSION['csrf'])) {
+    $_SESSION['csrf'] = bin2hex(random_bytes(32));
+}
+
 // Front controller (BE)
 require_once __DIR__ . '/../app/config.php';
 require_once __DIR__ . '/../app/core/Database.php';
@@ -46,6 +57,9 @@ $router->post('/posts/comment', 'PostController@submitComment');
 // Admin routes
 $router->get('/admin', 'Admin\\PageController@dashboard');
 
+// Admin - Upload
+$router->post('/admin/upload/image', 'Admin\\UploadController@image');
+
 // Admin - Posts Management
 $router->get('/admin/posts', 'Admin\\PostController@index');
 $router->get('/admin/posts/create', 'Admin\\PostController@create');
@@ -58,7 +72,6 @@ $router->post('/admin/posts/delete', 'Admin\\PostController@delete');
 $router->get('/admin/comments', 'Admin\\CommentController@index');
 $router->post('/admin/comments/approve', 'Admin\\CommentController@approve');
 $router->post('/admin/comments/reject', 'Admin\\CommentController@reject');
-$router->post('/admin/comments/spam', 'Admin\\CommentController@spam');
 $router->post('/admin/comments/delete', 'Admin\\CommentController@delete');
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

@@ -58,8 +58,7 @@ CREATE TABLE IF NOT EXISTS post_comments (
     status ENUM(
         'pending',
         'approved',
-        'rejected',
-        'spam'
+        'rejected'
     ) NOT NULL DEFAULT 'pending',
     ip_address VARCHAR(64) NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
