@@ -133,7 +133,7 @@ class PostController extends Controller {
 ```php
 class Post extends Model {
     protected static $table = 'posts';
-    
+
     public static function all() {
         return self::query("SELECT * FROM posts ORDER BY published_at DESC");
     }

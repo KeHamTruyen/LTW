@@ -8,15 +8,19 @@ unset($_SESSION['old_input']);
     <div class="container-xl">
         <div class="row g-2 align-items-center">
             <div class="col">
+                <div class="page-pretitle">
+                    Quản lý nội dung
+                </div>
                 <h2 class="page-title">
                     <?= $isEdit ? 'Chỉnh sửa bài viết' : 'Thêm bài viết mới' ?>
                 </h2>
             </div>
             <div class="col-auto ms-auto d-print-none">
-                <a href="<?= BASE_URL ?>admin/posts" class="btn btn-ghost-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                    Quay lại
-                </a>
+                <div class="btn-list">
+                    <a href="<?= BASE_URL ?>admin/posts" class="btn">
+                        Quay lại
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -81,11 +85,12 @@ unset($_SESSION['old_input']);
                             <div class="mb-3">
                                 <label class="form-label required">Nội dung</label>
                                 <textarea name="content_html" 
+                                          id="content-editor"
                                           class="form-control" 
                                           rows="15" 
                                           required 
                                           minlength="50"><?= htmlspecialchars($oldInput['content_html'] ?? $post['content_html'] ?? '') ?></textarea>
-                                <small class="form-hint">Có thể sử dụng HTML để định dạng nội dung</small>
+                                <small class="form-hint">Sử dụng editor để chèn ảnh và định dạng nội dung</small>
                             </div>
                         </div>
                     </div>
@@ -93,6 +98,27 @@ unset($_SESSION['old_input']);
 
                 <!-- Sidebar -->
                 <div class="col-lg-4">
+                    <!-- Category -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh mục</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-0">
+                                <label class="form-label">Chọn danh mục</label>
+                                <select name="category_id" class="form-select">
+                                    <option value="">-- Không có --</option>
+                                    <?php foreach ($categories as $category): ?>
+                                        <option value="<?= $category['id'] ?>" 
+                                            <?= ($oldInput['category_id'] ?? $post['category_id'] ?? '') == $category['id'] ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($category['name']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Status -->
                     <div class="card mb-3">
                         <div class="card-header">
@@ -121,10 +147,12 @@ unset($_SESSION['old_input']);
                             <?php endif; ?>
                         </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                                <?= $isEdit ? 'Cập nhật' : 'Tạo bài viết' ?>
-                            </button>
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary ms-auto">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>
+                                    <?= $isEdit ? 'Cập nhật' : 'Tạo bài viết' ?>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -161,3 +189,68 @@ unset($_SESSION['old_input']);
         </form>
     </div>
 </div>
+
+<!-- TinyMCE -->
+<script src="https://cdn.tiny.cloud/1/5cffpp4ort6x1v4xqnkxcqdfb9gu5vra7h7g696oy4mhad0g/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+tinymce.init({
+    selector: '#content-editor',
+    height: 500,
+    menubar: true,
+    plugins: [
+        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+    ],
+    toolbar: 'undo redo | blocks | ' +
+        'bold italic forecolor | alignleft aligncenter ' +
+        'alignright alignjustify | bullist numlist outdent indent | ' +
+        'removeformat | image link | code | help',
+    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+    images_upload_url: '<?= BASE_URL ?>admin/upload/image',
+    automatic_uploads: true,
+    images_reuse_filename: true,
+    file_picker_types: 'image',
+    images_upload_handler: function (blobInfo, progress) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.withCredentials = false;
+            xhr.open('POST', '<?= BASE_URL ?>admin/upload/image');
+
+            xhr.upload.onprogress = (e) => {
+                progress(e.loaded / e.total * 100);
+            };
+
+            xhr.onload = () => {
+                if (xhr.status === 403) {
+                    reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
+                    return;
+                }
+
+                if (xhr.status < 200 || xhr.status >= 300) {
+                    reject('HTTP Error: ' + xhr.status);
+                    return;
+                }
+
+                const json = JSON.parse(xhr.responseText);
+
+                if (!json || typeof json.location != 'string') {
+                    reject('Invalid JSON: ' + xhr.responseText);
+                    return;
+                }
+
+                resolve(json.location);
+            };
+
+            xhr.onerror = () => {
+                reject('Image upload failed due to a XHR Transport error. Code: ' + xhr.status);
+            };
+
+            const formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+            xhr.send(formData);
+        });
+    }
+});
+</script>

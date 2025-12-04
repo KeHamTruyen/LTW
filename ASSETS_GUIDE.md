@@ -38,12 +38,12 @@ LTW/
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'Admin Dashboard' ?> - PetCare</title>
-    
+
     <!-- Tabler CSS -->
     <link href="<?= BASE_URL ?>assets/tabler/css/tabler.min.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>assets/tabler/css/tabler-flags.min.css" rel="stylesheet">
     <link href="<?= BASE_URL ?>assets/tabler/css/tabler-payments.min.css" rel="stylesheet">
-    
+
     <!-- Custom CSS (nếu có) -->
     <link href="<?= BASE_URL ?>assets/css/admin.css" rel="stylesheet">
 </head>
@@ -53,16 +53,16 @@ LTW/
         <aside class="navbar navbar-vertical navbar-expand-lg">
             <!-- Menu content -->
         </aside>
-        
+
         <!-- Main Content -->
         <div class="page-wrapper">
             <?php include $content; ?>
         </div>
     </div>
-    
+
     <!-- Tabler JS -->
     <script src="<?= BASE_URL ?>assets/tabler/js/tabler.min.js"></script>
-    
+
     <!-- Custom JS (nếu có) -->
     <script src="<?= BASE_URL ?>assets/js/admin.js"></script>
 </body>
@@ -142,6 +142,7 @@ dashboard/buttons.html        # Button styles
 ```
 
 **Cách tham khảo:**
+
 1. Mở file HTML trong browser: `http://localhost/LTW/dashboard/cards.html`
 2. Copy HTML structure bạn thích
 3. Chuyển đổi thành PHP view với dynamic data
@@ -151,12 +152,14 @@ dashboard/buttons.html        # Button styles
 ## 🎯 Best Practices
 
 ### ✅ DO:
+
 - Dùng `tabler.min.css` và `tabler.min.js` (minified)
 - Load CSS trong `<head>`, JS cuối `</body>`
 - Sử dụng `BASE_URL` constant cho paths
 - Giữ `dashboard/` folder để tham khảo
 
 ### ❌ DON'T:
+
 - Không load toàn bộ libs nếu không dùng
 - Không edit trực tiếp files trong `assets/tabler/` (sẽ mất khi update)
 - Không commit uploaded files (`uploads/`) vào Git

@@ -13,9 +13,10 @@ class Post
      */
     public static function getAll(array $filters = []): array
     {
-        $sql = "SELECT p.*, u.name as author_name 
+        $sql = "SELECT p.*, u.name as author_name, c.name as category_name, c.slug as category_slug 
                 FROM posts p 
                 LEFT JOIN users u ON p.author_user_id = u.id 
+                LEFT JOIN categories c ON p.category_id = c.id
                 WHERE 1=1";
         $params = [];
 
@@ -93,9 +94,10 @@ class Post
      */
     public static function findById(int $id): ?array
     {
-        $sql = "SELECT p.*, u.name as author_name 
+        $sql = "SELECT p.*, u.name as author_name, c.name as category_name, c.slug as category_slug 
                 FROM posts p 
                 LEFT JOIN users u ON p.author_user_id = u.id 
+                LEFT JOIN categories c ON p.category_id = c.id
                 WHERE p.id = :id LIMIT 1";
         $stmt = Database::conn()->prepare($sql);
         $stmt->execute([':id' => $id]);
@@ -110,9 +112,10 @@ class Post
      */
     public static function findBySlug(string $slug): ?array
     {
-        $sql = "SELECT p.*, u.name as author_name 
+        $sql = "SELECT p.*, u.name as author_name, c.name as category_name, c.slug as category_slug 
                 FROM posts p 
                 LEFT JOIN users u ON p.author_user_id = u.id 
+                LEFT JOIN categories c ON p.category_id = c.id
                 WHERE p.slug = :slug LIMIT 1";
         $stmt = Database::conn()->prepare($sql);
         $stmt->execute([':slug' => $slug]);
@@ -254,5 +257,55 @@ class Post
         $stmt = Database::conn()->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Get previous published post
+     * @param int $id
+     * @param string $publishedAt
+     * @return array|null
+     */
+    public static function getPrevious(int $id, string $publishedAt): ?array
+    {
+        $sql = "SELECT id, title, slug 
+                FROM posts 
+                WHERE status = 'published' 
+                AND (published_at < :published_at OR (published_at = :published_at2 AND id < :id))
+                ORDER BY published_at DESC, id DESC 
+                LIMIT 1";
+        
+        $stmt = Database::conn()->prepare($sql);
+        $stmt->execute([
+            ':id' => $id,
+            ':published_at' => $publishedAt,
+            ':published_at2' => $publishedAt
+        ]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    /**
+     * Get next published post
+     * @param int $id
+     * @param string $publishedAt
+     * @return array|null
+     */
+    public static function getNext(int $id, string $publishedAt): ?array
+    {
+        $sql = "SELECT id, title, slug 
+                FROM posts 
+                WHERE status = 'published' 
+                AND (published_at > :published_at OR (published_at = :published_at2 AND id > :id))
+                ORDER BY published_at ASC, id ASC 
+                LIMIT 1";
+        
+        $stmt = Database::conn()->prepare($sql);
+        $stmt->execute([
+            ':id' => $id,
+            ':published_at' => $publishedAt,
+            ':published_at2' => $publishedAt
+        ]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
     }
 }

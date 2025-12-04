@@ -8,6 +8,9 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <!-- Custom CSS -->
     <link href="<?= BASE_URL ?>assets/css/public.css" rel="stylesheet">
 </head>
@@ -50,25 +53,22 @@
                     </svg>
                     <div class="cart-badge">0</div>
                 </div>
+
+                <div class="auth-buttons">
+                    <button class="auth-btn" onclick="window.location='<?= BASE_URL ?>login'">Đăng nhập</button>
+                    <button class="auth-btn" onclick="window.location='<?= BASE_URL ?>register'">Đăng Ký</button>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- HERO WITH 4 DOGS -->
-    <section class="hero-dogs">
-        <div class="hero-dogs-wrapper">
-            <img src="<?= BASE_URL ?>assets/images/logo.png" alt="4 Dogs" class="dogs-image">
-            <div class="hero-title-box">
-                <div class="hero-title-box-inner">
-                    <h1 class="hero-title">Khám phá bài viết</h1>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- NAVIGATION -->
     <div class="nav-container">
         <nav class="nav">
+            <a href="<?= BASE_URL ?>" class="logo">
+                <img src="<?= BASE_URL ?>assets/images/logo.png" alt="Pet's Choice Logo" onerror="this.src='https://via.placeholder.com/89x76'">
+            </a>
+
             <div class="nav-menu">
                 <a href="<?= BASE_URL ?>" class="nav-link">Home</a>
                 <a href="<?= BASE_URL ?>about" class="nav-link">About Us</a>
@@ -78,13 +78,23 @@
                 <a href="<?= BASE_URL ?>posts" class="nav-link <?= isset($activeMenu) && $activeMenu === 'blog' ? 'active' : '' ?>">Blog</a>
                 <a href="<?= BASE_URL ?>contact" class="nav-link">Contact Us</a>
             </div>
-
-            <div class="auth-buttons">
-                <button class="auth-btn" onclick="window.location='<?= BASE_URL ?>login'">Đăng nhập</button>
-                <button class="auth-btn" onclick="window.location='<?= BASE_URL ?>register'">Đăng Ký</button>
-            </div>
         </nav>
     </div>
+
+    <!-- HERO WITH 4 DOGS - Only show on blog listing page, not on blog detail -->
+    <?php if (!isset($hideBlogHero) || !$hideBlogHero): ?>
+    <section class="hero-dogs">
+        <div class="hero-dogs-wrapper">
+            <div class="hero-image-container">
+                <img src="<?= BASE_URL ?>assets/images/4dogs.png" alt="Pet animals" class="dogs-image">
+            </div>
+            
+            <div class="hero-title-box">
+                <h1 class="hero-title">Khám phá bài viết</h1>
+            </div>
+        </div>
+    </section>
+    <?php endif; ?>
 
     <!-- CONTENT -->
     <main>
