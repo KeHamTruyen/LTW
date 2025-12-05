@@ -108,10 +108,93 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="subheader">Người dùng</div>
+                            <div class="ms-auto lh-1">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a class="dropdown-item" href="<?= BASE_URL ?>admin/users">Xem tất cả</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="h1 mb-3"><?= $stats['users'] ?? 0 ?></div>
                         <div class="d-flex mb-2">
                             <div class="text-secondary">Đã đăng ký</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Stats Row -->
+        <div class="row row-deck row-cards mt-3">
+            <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="subheader">Sản phẩm</div>
+                            <div class="ms-auto lh-1">
+                                <a href="<?= BASE_URL ?>admin/products" class="text-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 0" /><path d="M9 12l6 0" /><path d="M9 18l6 0" /><path d="M5 6l0 .01" /><path d="M5 12l0 .01" /><path d="M5 18l0 .01" /></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="h1 mb-3"><?= $stats['products'] ?? 0 ?></div>
+                        <div class="d-flex mb-2">
+                            <a href="<?= BASE_URL ?>admin/products" class="text-primary">Quản lý →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="subheader">Đơn hàng</div>
+                            <div class="ms-auto lh-1">
+                                <a href="<?= BASE_URL ?>admin/orders" class="text-secondary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 0" /><path d="M9 12l6 0" /><path d="M9 18l6 0" /><path d="M5 6l0 .01" /><path d="M5 12l0 .01" /><path d="M5 18l0 .01" /></svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="h1 mb-3"><?= $stats['orders'] ?? 0 ?></div>
+                        <div class="d-flex mb-2">
+                            <a href="<?= BASE_URL ?>admin/orders" class="text-primary">Quản lý →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="subheader">Liên hệ chưa đọc</div>
+                            <div class="ms-auto lh-1">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle text-secondary" href="#" data-bs-toggle="dropdown">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a class="dropdown-item" href="<?= BASE_URL ?>admin/contacts?status=unread">Xem chưa đọc</a>
+                                        <a class="dropdown-item" href="<?= BASE_URL ?>admin/contacts">Xem tất cả</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-baseline">
+                            <div class="h1 mb-0 me-2"><?= $stats['contacts_unread'] ?? 0 ?></div>
+                            <?php if (($stats['contacts_unread'] ?? 0) > 0): ?>
+                            <div class="me-auto">
+                                <span class="badge bg-yellow text-yellow-fg">Cần xử lý</span>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="d-flex mb-2">
+                            <a href="<?= BASE_URL ?>admin/contacts" class="text-primary">Quản lý →</a>
                         </div>
                     </div>
                 </div>
@@ -127,22 +210,28 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <a href="<?= BASE_URL ?>admin/posts/create" class="btn btn-primary w-100">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                                    Thêm bài viết mới
+                                    Thêm bài viết
                                 </a>
                             </div>
-                            <div class="col-md-4">
-                                <a href="<?= BASE_URL ?>admin/posts" class="btn btn-outline-primary w-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 9l1 0" /><path d="M9 13l6 0" /><path d="M9 17l6 0" /></svg>
-                                    Quản lý bài viết
+                            <div class="col-md-3">
+                                <a href="<?= BASE_URL ?>admin/products/create" class="btn btn-success w-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+                                    Thêm sản phẩm
                                 </a>
                             </div>
-                            <div class="col-md-4">
-                                <a href="<?= BASE_URL ?>admin/comments" class="btn btn-outline-primary w-100">
+                            <div class="col-md-3">
+                                <a href="<?= BASE_URL ?>admin/comments?status=pending" class="btn btn-warning w-100">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 9h8" /><path d="M8 13h6" /><path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" /></svg>
-                                    Quản lý bình luận
+                                    Bình luận chờ duyệt
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="<?= BASE_URL ?>admin/contacts?status=unread" class="btn btn-info w-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg>
+                                    Liên hệ chưa đọc
                                 </a>
                             </div>
                         </div>

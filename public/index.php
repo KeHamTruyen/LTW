@@ -49,6 +49,10 @@ $router->get('/login', 'AuthController@login');
 $router->post('/login', 'AuthController@doLogin');
 $router->get('/logout', 'AuthController@logout');
 
+// Contact
+$router->get('/contact', 'ContactController@index');
+$router->post('/contact/submit', 'ContactController@submit');
+
 // Posts (Public)
 $router->get('/posts', 'PostController@index');
 $router->get('/posts/show', 'PostController@show');

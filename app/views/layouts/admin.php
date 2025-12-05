@@ -69,6 +69,62 @@
                 <span class="nav-link-title">Bình luận</span>
               </a>
             </li>
+            <li class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/products') !== false ? 'active' : '' ?>">
+              <a class="nav-link" href="<?= BASE_URL ?>admin/products">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 2l.01 6.553a3 3 0 0 1 -.245 1.207l-.112 .19a4.999 4.999 0 0 0 -.669 1.226l-1.341 2.584a2.107 2.107 0 0 0 -.018 .226l-.086 .19c-.059 .27 -.118 .558 -.185 .867a5.154 5.154 0 0 0 -.084 1.262l-.005 .066c0 .527 .095 1.096 .257 1.658l.019 .062c.301 1.118 1.303 2.007 2.482 2.55l.039 .015c.28 .093 .578 .154 .883 .181l.062 .007c.527 0 1.096 -.095 1.658 -.257l.062 -.019a4.978 4.978 0 0 0 1.226 -.669l2.584 -1.341a2.111 2.111 0 0 0 .226 -.018l.19 -.086c.27 -.059 .558 -.118 .867 -.185l.066 -.005a5.154 5.154 0 0 0 1.262 -.084l.19 -.112a4.999 4.999 0 0 0 1.226 -.669l2.584 -1.341a2.11 2.11 0 0 0 .226 -.018l.19 -.086a5.037 5.037 0 0 0 .867 -.185l.066 -.005a5.154 5.154 0 0 0 1.262 -.084l.19 -.112a5 5 0 0 0 1.11 -.644l.174 -.165l.553 .01h6.553v16h-16v-6.553l-6.01 -.01z" /></svg>
+                </span>
+                <span class="nav-link-title">Sản phẩm</span>
+              </a>
+            </li>
+            <li class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/orders') !== false ? 'active' : '' ?>">
+              <a class="nav-link" href="<?= BASE_URL ?>admin/orders">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2" /><path d="M9 12l.01 0" /><path d="M13 12l2 0" /><path d="M9 16l.01 0" /><path d="M13 16l2 0" /></svg>
+                </span>
+                <span class="nav-link-title">Đơn hàng</span>
+              </a>
+            </li>
+            <li class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/users') !== false ? 'active' : '' ?>">
+              <a class="nav-link" href="<?= BASE_URL ?>admin/users">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>
+                </span>
+                <span class="nav-link-title">Người dùng</span>
+              </a>
+            </li>
+            <li class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/contacts') !== false ? 'active' : '' ?>">
+              <a class="nav-link" href="<?= BASE_URL ?>admin/contacts">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg>
+                </span>
+                <span class="nav-link-title">Liên hệ</span>
+              </a>
+            </li>
+            <li class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/pages') !== false ? 'active' : '' ?>">
+              <a class="nav-link" href="<?= BASE_URL ?>admin/pages">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 9l1 0" /><path d="M9 13l6 0" /><path d="M9 17l6 0" /></svg>
+                </span>
+                <span class="nav-link-title">Trang</span>
+              </a>
+            </li>
+            <li class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/faqs') !== false ? 'active' : '' ?>">
+              <a class="nav-link" href="<?= BASE_URL ?>admin/faqs">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 8h8" /><path d="M8 12h8" /><path d="M8 16h8" /><path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /></svg>
+                </span>
+                <span class="nav-link-title">FAQ</span>
+              </a>
+            </li>
+            <li class="nav-item <?= strpos($_SERVER['REQUEST_URI'], '/admin/about') !== false ? 'active' : '' ?>">
+              <a class="nav-link" href="<?= BASE_URL ?>admin/about">
+                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+                </span>
+                <span class="nav-link-title">Giới thiệu</span>
+              </a>
+            </li>
           </ul>
         </div>
       </div>
