@@ -20,7 +20,7 @@ VALUES (
         'Chăm sóc thú cưng mùa hè - Những điều cần lưu ý',
         'cham-soc-thu-cung-mua-he',
         'Mùa hè là thời điểm khó khăn cho thú cưng của bạn. Hãy tìm hiểu cách chăm sóc chúng đúng cách trong thời tiết nóng bức.',
-        '<h2>Giữ cho thú cưng luôn mát mẻ</h2>
+        '<h2>Giữ cho thú cưng luôn mát mẻ</h2>        http://localhost/LTW/public/init-db.php
 <p>Trong mùa hè, nhiệt độ cao có thể gây nguy hiểm cho thú cưng. Đảm bảo chúng luôn có nước uống mát và nơi trú ẩn thoáng mát.</p>
 <h3>Lời khuyên quan trọng:</h3>
 <ul>

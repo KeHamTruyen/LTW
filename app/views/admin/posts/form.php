@@ -87,9 +87,7 @@ unset($_SESSION['old_input']);
                                 <textarea name="content_html" 
                                           id="content-editor"
                                           class="form-control" 
-                                          rows="15" 
-                                          required 
-                                          minlength="50"><?= htmlspecialchars($oldInput['content_html'] ?? $post['content_html'] ?? '') ?></textarea>
+                                          rows="15"><?= htmlspecialchars($oldInput['content_html'] ?? $post['content_html'] ?? '') ?></textarea>
                                 <small class="form-hint">Sử dụng editor để chèn ảnh và định dạng nội dung</small>
                             </div>
                         </div>
@@ -250,6 +248,20 @@ tinymce.init({
             formData.append('file', blobInfo.blob(), blobInfo.filename());
 
             xhr.send(formData);
+        });
+    },
+    setup: function(editor) {
+        // Validate content before form submit
+        editor.on('init', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                const content = tinymce.get('content-editor').getContent();
+                if (content.trim().length < 50) {
+                    e.preventDefault();
+                    alert('Nội dung bài viết phải có ít nhất 50 ký tự');
+                    return false;
+                }
+            });
         });
     }
 });

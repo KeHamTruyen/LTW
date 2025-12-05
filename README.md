@@ -171,7 +171,7 @@ class Post extends Model {
 
 ### TODO List
 
-- [ ] Trang chi tiết bài viết (`posts/show.php`)
+- [DONE] Trang chi tiết bài viết (`posts/show.php`)
 - [ ] Chức năng bình luận và đánh giá
 - [ ] Filter bài viết theo danh mục
 - [ ] Admin dashboard với Tabler
