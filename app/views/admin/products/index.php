@@ -112,16 +112,16 @@ $totalPages = $totalPages ?? 1;
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <span class="badge <?= $product['stock_quantity'] > 0 ? 'bg-success' : 'bg-danger' ?>">
+                                        <span class="badge <?= $product['stock_quantity'] > 0 ? 'bg-success text-white' : 'bg-danger text-white' ?>">
                                             <?= $product['stock_quantity'] ?>
                                         </span>
                                     </td>
                                     <td>
                                         <?php
                                         $statusBadges = [
-                                            'published' => 'bg-success',
-                                            'draft' => 'bg-secondary',
-                                            'out_of_stock' => 'bg-danger',
+                                            'published' => 'bg-success text-white',
+                                            'draft' => 'bg-secondary text-white',
+                                            'out_of_stock' => 'bg-danger text-white',
                                         ];
                                         $statusLabels = [
                                             'published' => 'Đã xuất bản',
@@ -129,17 +129,17 @@ $totalPages = $totalPages ?? 1;
                                             'out_of_stock' => 'Hết hàng',
                                         ];
                                         ?>
-                                        <span class="badge <?= $statusBadges[$product['status']] ?? 'bg-secondary' ?>">
+                                        <span class="badge <?= $statusBadges[$product['status']] ?? 'bg-secondary text-white' ?>">
                                             <?= $statusLabels[$product['status']] ?? $product['status'] ?>
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="btn-list">
+                                        <div class="btn-list flex-nowrap">
                                             <a href="<?= BASE_URL ?>admin/products/edit?id=<?= $product['id'] ?>" 
                                                class="btn btn-sm btn-icon" title="Sửa">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
                                             </a>
-                                            <form method="post" action="<?= BASE_URL ?>admin/products/delete" class="d-inline" 
+                                            <form method="post" action="<?= BASE_URL ?>admin/products/delete" class="d-inline ms-1" 
                                                   onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
                                                 <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?? '' ?>">
                                                 <input type="hidden" name="id" value="<?= $product['id'] ?>">

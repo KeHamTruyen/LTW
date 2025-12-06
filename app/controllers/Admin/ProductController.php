@@ -46,7 +46,7 @@ class ProductController extends Controller
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'total' => $total,
-        ], 'admin');
+        ], 'Quản lý sản phẩm', 'admin');
     }
 
     public function create(): void
@@ -56,7 +56,7 @@ class ProductController extends Controller
             'title' => 'Thêm sản phẩm mới',
             'product' => null,
             'categories' => $categories,
-        ], 'admin');
+        ], 'Thêm sản phẩm mới', 'admin');
     }
 
     public function store(): void
@@ -142,7 +142,7 @@ class ProductController extends Controller
             'title' => 'Chỉnh sửa sản phẩm',
             'product' => $product,
             'categories' => $categories,
-        ], 'admin');
+        ], 'Chỉnh sửa sản phẩm', 'admin');
     }
 
     public function update(): void

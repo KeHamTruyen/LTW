@@ -25,6 +25,10 @@ class PageController extends Controller
             'products' => 0,
             'orders' => 0,
             'contacts_unread' => 0,
+            'faqs' => 0,
+            'faqs_active' => 0,
+            'about_configured' => false,
+            'home_configured' => false,
         ];
         try { $stats['posts'] = (int)$pdo->query("SELECT COUNT(*) FROM posts")->fetchColumn(); } catch (\Throwable $e) {}
         try { $stats['drafts'] = (int)$pdo->query("SELECT COUNT(*) FROM posts WHERE status='draft'")->fetchColumn(); } catch (\Throwable $e) {}
@@ -34,7 +38,21 @@ class PageController extends Controller
         try { $stats['products'] = (int)$pdo->query("SELECT COUNT(*) FROM products")->fetchColumn(); } catch (\Throwable $e) {}
         try { $stats['orders'] = (int)$pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn(); } catch (\Throwable $e) {}
         try { $stats['contacts_unread'] = (int)$pdo->query("SELECT COUNT(*) FROM contacts WHERE status='unread'")->fetchColumn(); } catch (\Throwable $e) {}
-        $this->view('admin.dashboard', [ '_layout' => 'admin', 'title' => 'Tổng quan', 'stats' => $stats ]);
+        try { $stats['faqs'] = (int)$pdo->query("SELECT COUNT(*) FROM faqs")->fetchColumn(); } catch (\Throwable $e) {}
+        try { $stats['faqs_active'] = (int)$pdo->query("SELECT COUNT(*) FROM faqs WHERE status='active'")->fetchColumn(); } catch (\Throwable $e) {}
+        try { 
+            $about = $pdo->query("SELECT COUNT(*) FROM about_page")->fetchColumn();
+            $stats['about_configured'] = (int)$about > 0;
+        } catch (\Throwable $e) {}
+        try { 
+            $home = $pdo->query("SELECT COUNT(*) FROM home_page")->fetchColumn();
+            $stats['home_configured'] = (int)$home > 0;
+        } catch (\Throwable $e) {}
+        
+        $this->view('admin/dashboard', [
+            'title' => 'Tổng quan',
+            'stats' => $stats
+        ], 'Tổng quan', 'admin');
     }
 
     public function index(): void
@@ -64,7 +82,7 @@ class PageController extends Controller
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'total' => $total,
-        ], 'admin');
+        ], 'Quản lý trang', 'admin');
     }
 
     public function create(): void
@@ -72,7 +90,7 @@ class PageController extends Controller
         $this->view('admin/pages/form', [
             'title' => 'Thêm trang mới',
             'page' => null,
-        ], 'admin');
+        ], 'Thêm trang mới', 'admin');
     }
 
     public function store(): void
@@ -137,7 +155,7 @@ class PageController extends Controller
         $this->view('admin/pages/form', [
             'title' => 'Chỉnh sửa trang',
             'page' => $page,
-        ], 'admin');
+        ], 'Chỉnh sửa trang', 'admin');
     }
 
     public function update(): void

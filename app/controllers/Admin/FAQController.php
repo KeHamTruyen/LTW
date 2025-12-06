@@ -39,7 +39,7 @@ class FAQController extends Controller
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'total' => $total,
-        ], 'admin');
+        ], 'Quản lý FAQ', 'admin');
     }
 
     public function create(): void
@@ -47,7 +47,7 @@ class FAQController extends Controller
         $this->view('admin/faqs/form', [
             'title' => 'Thêm FAQ mới',
             'faq' => null,
-        ], 'admin');
+        ], 'Thêm FAQ mới', 'admin');
     }
 
     public function store(): void
@@ -107,7 +107,7 @@ class FAQController extends Controller
         $this->view('admin/faqs/form', [
             'title' => 'Chỉnh sửa FAQ',
             'faq' => $faq,
-        ], 'admin');
+        ], 'Chỉnh sửa FAQ', 'admin');
     }
 
     public function update(): void

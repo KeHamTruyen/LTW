@@ -18,7 +18,7 @@ class AboutController extends Controller
         $this->view('admin/about/index', [
             'title' => 'Quản lý trang Giới thiệu',
             'about' => $about,
-        ], 'admin');
+        ], 'Quản lý trang Giới thiệu', 'admin');
     }
 
     public function update(): void
