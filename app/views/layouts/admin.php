@@ -20,6 +20,7 @@
   <script src="<?= BASE_URL ?>assets/tabler/js/tabler-theme.min.js"></script>
   <div class="page">
     <!-- Sidebar -->
+    <?php if (!isset($hideSidebar) || !$hideSidebar): ?>
     <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
       <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
@@ -137,7 +138,9 @@
         </div>
       </div>
     </aside>
+    <?php endif; ?>
     <!-- Navbar -->
+    <?php if (!isset($hideSidebar) || !$hideSidebar): ?>
     <header class="navbar navbar-expand-md d-print-none">
       <div class="container-xl">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
@@ -169,6 +172,7 @@
         </div>
       </div>
     </header>
+    <?php endif; ?>
 
     <div class="page-wrapper">
       <?php $content(); ?>

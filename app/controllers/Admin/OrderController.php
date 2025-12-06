@@ -45,7 +45,7 @@ class OrderController extends Controller
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'total' => $total,
-        ], 'admin');
+        ], 'Quản lý đơn hàng', 'admin');
     }
 
     public function show(): void
@@ -68,7 +68,7 @@ class OrderController extends Controller
             'title' => 'Chi tiết đơn hàng #' . $order['order_number'],
             'order' => $order,
             'orderItems' => $orderItems,
-        ], 'admin');
+        ], 'Chi tiết đơn hàng #' . $order['order_number'], 'admin');
     }
 
     public function updateStatus(): void

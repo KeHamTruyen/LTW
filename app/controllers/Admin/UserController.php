@@ -51,7 +51,7 @@ class UserController extends Controller
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'total' => $total,
-        ], 'admin');
+        ], 'Quản lý người dùng', 'admin');
     }
 
     public function show(): void
@@ -71,7 +71,7 @@ class UserController extends Controller
         $this->view('admin/users/show', [
             'title' => 'Chi tiết người dùng',
             'user' => $user,
-        ], 'admin');
+        ], 'Chi tiết người dùng', 'admin');
     }
 
     public function updateStatus(): void

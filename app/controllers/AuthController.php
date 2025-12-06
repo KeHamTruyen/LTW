@@ -4,6 +4,7 @@ namespace App\Controllers;
 use Core\Controller;
 use Core\Auth;
 use App\Models\User;
+use App\Models\Home;
 
 class AuthController extends Controller
 {
@@ -19,10 +20,12 @@ class AuthController extends Controller
             exit;
         }
 
+        $homeData = Home::get();
         $this->view('auth.login', [
             'title' => 'Đăng nhập',
-            '_layout' => 'auth',
-        ]);
+            'hideSidebar' => true,
+            'homeData' => $homeData,
+        ], 'Đăng nhập', 'admin');
     }
 
     public function doLogin(): void
@@ -85,10 +88,12 @@ class AuthController extends Controller
             exit;
         }
 
+        $homeData = Home::get();
         $this->view('auth.register', [
             'title' => 'Đăng ký',
-            '_layout' => 'auth',
-        ]);
+            'hideSidebar' => true,
+            'homeData' => $homeData,
+        ], 'Đăng ký', 'admin');
     }
 
     public function doRegister(): void

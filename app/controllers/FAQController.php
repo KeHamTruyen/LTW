@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use Core\Controller;
 use App\Models\FAQ;
+use App\Models\Home;
 
 class FAQController extends Controller
 {
@@ -26,6 +27,7 @@ class FAQController extends Controller
         $faqs = FAQ::getAll($filters);
         $total = FAQ::count($filters);
         $totalPages = ceil($total / $perPage);
+        $homeData = Home::get();
 
         $this->view('faq.index', [
             'title' => 'Hỏi & Đáp - ' . APP_NAME,
@@ -34,7 +36,10 @@ class FAQController extends Controller
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'total' => $total,
-        ]);
+            'homeData' => $homeData,
+            'activeMenu' => 'faq',
+            'hideBlogHero' => true,
+        ], null, 'public');
     }
 }
 
