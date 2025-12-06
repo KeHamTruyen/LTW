@@ -47,7 +47,7 @@ class ContactController extends Controller
             'totalPages' => $totalPages,
             'total' => $total,
             'unreadCount' => $unreadCount,
-        ], 'admin');
+        ], null, 'admin');
     }
 
     public function show(): void
@@ -72,7 +72,7 @@ class ContactController extends Controller
         $this->view('admin/contacts/show', [
             'title' => 'Chi tiết liên hệ',
             'contact' => $contact,
-        ], 'admin');
+        ], null, 'admin');
     }
 
     public function updateStatus(): void

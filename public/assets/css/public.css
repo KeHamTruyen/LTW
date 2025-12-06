@@ -874,6 +874,8 @@ main {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 .store-address {
@@ -1834,3 +1836,10 @@ main {
     }
 }
 
+@media (min-width: 1200px) {
+    body {
+        zoom: 0.75; 
+        -moz-transform: scale(0.75);
+        -moz-transform-origin: top center;
+    }
+} 

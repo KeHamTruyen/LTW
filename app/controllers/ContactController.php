@@ -14,6 +14,7 @@ class ContactController extends Controller
         $this->view('contact/index', [
             'title' => 'Liên hệ - ' . APP_NAME,
             'activeMenu' => 'contact',
+            'hideBlogHero' => true, 
         ], 'Liên hệ với chúng tôi', 'public');
     }
 

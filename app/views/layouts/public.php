@@ -66,17 +66,16 @@
     <div class="nav-container">
         <nav class="nav">
             <a href="<?= BASE_URL ?>" class="logo">
-                <img src="<?= BASE_URL ?>assets/images/logo.png" alt="Pet's Choice Logo" onerror="this.src='https://via.placeholder.com/89x76'">
+                <img src="<?= htmlspecialchars($homeData['company_logo_url'] ?? BASE_URL . 'assets/images/logo.png') ?>" alt="Pet's Choice Logo" onerror="this.src='https://via.placeholder.com/89x76'">
             </a>
 
             <div class="nav-menu">
-                <a href="<?= BASE_URL ?>" class="nav-link">Home</a>
-                <a href="<?= BASE_URL ?>about" class="nav-link">About Us</a>
-                <a href="<?= BASE_URL ?>faq" class="nav-link">Q&A</a>
-                <a href="<?= BASE_URL ?>shop" class="nav-link">Shop</a>
-                <a href="<?= BASE_URL ?>service" class="nav-link">Service</a>
+                <a href="<?= BASE_URL ?>" class="nav-link <?= isset($activeMenu) && $activeMenu === 'home' ? 'active' : '' ?>">Home</a>
+                <a href="<?= BASE_URL ?>about" class="nav-link <?= isset($activeMenu) && $activeMenu === 'about' ? 'active' : '' ?>">About Us</a>
+                <a href="<?= BASE_URL ?>faq" class="nav-link <?= isset($activeMenu) && $activeMenu === 'faq' ? 'active' : '' ?>">Q&A</a>
+                <a href="<?= BASE_URL ?>shop" class="nav-link <?= isset($activeMenu) && $activeMenu === 'shop' ? 'active' : '' ?>">Shop</a>
                 <a href="<?= BASE_URL ?>posts" class="nav-link <?= isset($activeMenu) && $activeMenu === 'blog' ? 'active' : '' ?>">Blog</a>
-                <a href="<?= BASE_URL ?>contact" class="nav-link">Contact Us</a>
+                <a href="<?= BASE_URL ?>contact" class="nav-link <?= isset($activeMenu) && $activeMenu === 'contact' ? 'active' : '' ?>">Contact Us</a>
             </div>
         </nav>
     </div>
@@ -106,7 +105,7 @@
         <div class="footer-content">
             <div class="footer-grid">
                 <div class="footer-logo-section">
-                    <img src="<?= BASE_URL ?>assets/images/logo.png" alt="Pet's Choice Logo" onerror="this.src='https://via.placeholder.com/89x76'">
+                    <img src="<?= htmlspecialchars($homeData['company_logo_url'] ?? BASE_URL . 'assets/images/logo.png') ?>" alt="Pet's Choice Logo" onerror="this.src='https://via.placeholder.com/89x76'">
                     <p class="footer-description">Chăm sóc thú cưng tận tâm, dịch vụ chuyên nghiệp, giá cả hợp lý. Đồng hành cùng bạn chăm sóc thú cưng yêu quý.</p>
                     <div class="social-icons">
                         <a href="#" class="social-icon">

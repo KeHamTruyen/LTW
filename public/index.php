@@ -78,4 +78,15 @@ $router->post('/admin/comments/approve', 'Admin\\CommentController@approve');
 $router->post('/admin/comments/reject', 'Admin\\CommentController@reject');
 $router->post('/admin/comments/delete', 'Admin\\CommentController@delete');
 
+// Admin - Home Management
+$router->get('/admin/home', 'Admin\\HomeController@index');
+$router->post('/admin/home/update', 'Admin\\HomeController@update');
+
+// Admin - Contacts Management
+$router->get('/admin/contacts', 'Admin\\ContactController@index');
+$router->get('/admin/contacts/show', 'Admin\\ContactController@show');
+$router->post('/admin/contacts/update-status', 'Admin\\ContactController@updateStatus');
+$router->post('/admin/contacts/reply', 'Admin\\ContactController@reply');
+$router->post('/admin/contacts/delete', 'Admin\\ContactController@delete');
+
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
