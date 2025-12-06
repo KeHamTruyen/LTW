@@ -12,28 +12,29 @@ Dự án web quản lý thú cưng với kiến trúc MVC thuần PHP (không d�
 
 ```
 LTW/
-├─ app/
-│  ├─ core/                # Router, Controller, Database, Auth, Assets
-│  ├─ controllers/         # PostController, AuthController, etc.
-│  ├─ models/              # Post, User, PostComment models
-│  └─ views/
-│     ├─ layouts/          # public.php (blog layout), main.php (admin layout)
-│     ├─ posts/            # index.php, show.php
-│     └─ auth/             # login.php, register.php
-├─ public/
-│  ├─ index.php            # Entry point
-│  ├─ .htaccess            # URL rewriting rules
-│  └─ assets/
-│     ├─ css/
-│     │  └─ public.css     # Blog/public pages styling
-│     ├─ images/
-│     │  └─ logo.png       # 4 dogs logo
-│     └─ tabler/           # Tabler admin dashboard assets
-├─ database/
-│  ├─ schema.sql           # Database structure
-│  └─ migrations/          # Database migration files
-├─ dashboard/              # Tabler templates (reference only)
-└─ FE/                     # Vite/React (optional, for future use)
+├── app/                  # Source code MVC chính
+│   ├── Models/           # Các model dữ liệu
+│   ├── controllers/      # Controller xử lý logic
+│   ├── core/             # Core ứng dụng (BaseController, routing...)
+│   ├── views/            # Giao diện view cho người dùng
+│   └── config.php        # Cấu hình chung
+├── database/             # Migrate, seed, schema SQL và script khởi tạo database
+│   ├── migrations/
+│   ├── migrate_all.php
+│   ├── schema.sql
+│   ├── seed.php
+│   └── seed_posts.sql
+├── public/               # Static assets, entrypoint index.php, assets, init-db
+│   ├── assets/
+│   ├── index.php
+│   ├── init-db.php
+│   └── .htaccess
+├── setup.php             # Script thiết lập mới
+├── package.json          # Quản lý package (nếu có dùng npm/yarn)
+├── README.md             # File này
+├── [ADMIN_GUIDE.md]      # Hướng dẫn cho admin
+├── [ASSETS_GUIDE.md]     # Hướng dẫn asset
+├── assignment.pdf        # Đề tài bài tập/project
 ```
 
 ## Cài đặt nhanh
@@ -91,8 +92,8 @@ Dự án sử dụng clean URL với `.htaccess`:
 - ✅ Sidebar: danh mục, bài viết gần đây
 - ✅ Hero section với logo 4 con chó
 - ✅ Responsive design
-- ⏳ Chi tiết bài viết (đang phát triển)
-- ⏳ Bình luận và đánh giá (đang phát triển)
+- ✅ Chi tiết bài viết (đang phát triển)
+- ✅ Bình luận và đánh giá (đang phát triển)
 
 ### Authentication
 
@@ -103,9 +104,9 @@ Dự án sử dụng clean URL với `.htaccess`:
 
 ### Admin Dashboard
 
-- ⏳ Quản lý bài viết (đang phát triển)
-- ⏳ Quản lý người dùng (đang phát triển)
-- ⏳ Thống kê (đang phát triển)
+- ✅ Quản lý bài viết (đang phát triển)
+- ✅ Quản lý người dùng (đang phát triển)
+- ✅ Thống kê (đang phát triển)
 
 ## Kiến trúc MVC
 
@@ -169,15 +170,6 @@ class Post extends Model {
 
 ## Phát triển tiếp
 
-### TODO List
-
-- [ ] Trang chi tiết bài viết (`posts/show.php`)
-- [ ] Chức năng bình luận và đánh giá
-- [ ] Filter bài viết theo danh mục
-- [ ] Admin dashboard với Tabler
-- [ ] Trang Home, About, Contact, Q&A, Shop, Service
-- [ ] Authentication pages với public design
-- [ ] Upload và quản lý hình ảnh
 
 ### Coding Standards
 
