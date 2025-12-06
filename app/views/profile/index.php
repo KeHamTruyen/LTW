@@ -116,10 +116,6 @@ if (!$user) {
                        class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-white transition">
                         Đổi mật khẩu
                     </a>
-                    <a href="<?= BASE_URL ?>orders" 
-                       class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-white transition">
-                        Đơn hàng của tôi
-                    </a>
                 </div>
             </div>
         </div>

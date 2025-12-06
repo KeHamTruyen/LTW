@@ -45,19 +45,81 @@
                     </button>
                 </div>
 
-                <div class="cart-icon">
+                <a href="<?= BASE_URL ?>cart" class="cart-icon" style="position: relative; display: inline-block; cursor: pointer;">
                     <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9 29C9.55228 29 10 28.5523 10 28C10 27.4477 9.55228 27 9 27C8.44772 27 8 27.4477 8 28C8 28.5523 8.44772 29 9 29Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M20 29C20.5523 29 21 28.5523 21 28C21 27.4477 20.5523 27 20 27C19.4477 27 19 27.4477 19 28C19 28.5523 19.4477 29 20 29Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M1 8H5L7.68 21.39C7.77144 21.8504 8.02191 22.264 8.38755 22.5583C8.75318 22.8526 9.2107 23.009 9.68 23H19.4C19.8693 23.009 20.3268 22.8526 20.6925 22.5583C21.0581 22.264 21.3086 21.8504 21.4 21.39L23 13H6" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <div class="cart-badge">0</div>
-                </div>
+                </a>
 
-                <div class="auth-buttons">
-                    <button class="auth-btn" onclick="window.location='<?= BASE_URL ?>login'">Đăng nhập</button>
-                    <button class="auth-btn" onclick="window.location='<?= BASE_URL ?>register'">Đăng Ký</button>
-                </div>
+                <?php
+                use Core\Auth;
+                $isLoggedIn = Auth::check();
+                $user = Auth::user();
+                $avatarUrl = $_SESSION['user_avatar'] ?? null;
+                $userName = $_SESSION['user_name'] ?? ($user['name'] ?? '');
+                ?>
+                
+                <?php if ($isLoggedIn): ?>
+                    <!-- User Avatar with Dropdown -->
+                    <div class="user-avatar-container" style="position: relative; display: inline-block; margin-left: 10px;">
+                        <button id="userAvatarBtn" class="user-avatar-link" style="display: inline-block; width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 2px solid #000; cursor: pointer; background: #f0f0f0; transition: transform 0.2s; padding: 0;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                            <?php if (!empty($avatarUrl)): ?>
+                                <img src="<?= htmlspecialchars($avatarUrl) ?>" 
+                                     alt="<?= htmlspecialchars($userName) ?>" 
+                                     style="width: 100%; height: 100%; object-fit: cover;">
+                            <?php else: ?>
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #206bc4; color: white; font-weight: bold; font-size: 16px;">
+                                    <?= strtoupper(mb_substr($userName, 0, 1)) ?>
+                                </div>
+                            <?php endif; ?>
+                        </button>
+                        <div id="userDropdown" class="user-dropdown" style="display: none; position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 180px; z-index: 1000;">
+                            <div style="padding: 12px; border-bottom: 1px solid #eee;">
+                                <div style="font-weight: 600; color: #333;"><?= htmlspecialchars($userName) ?></div>
+                                <div style="font-size: 12px; color: #666; margin-top: 2px;"><?= htmlspecialchars($_SESSION['user_email'] ?? '') ?></div>
+                            </div>
+                            <div style="padding: 4px 0;">
+                                <a href="<?= BASE_URL ?>profile" style="display: block; padding: 10px 16px; color: #333; text-decoration: none; transition: background 0.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='white'">
+                                    👤 Thông tin cá nhân
+                                </a>
+                                <?php if (Auth::isAdmin()): ?>
+                                    <a href="<?= BASE_URL ?>admin" style="display: block; padding: 10px 16px; color: #333; text-decoration: none; transition: background 0.2s;" onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='white'">
+                                    ⚙️ Quản lý trang web
+                                </a>
+                                <?php endif; ?>
+                                <a href="<?= BASE_URL ?>logout" style="display: block; padding: 10px 16px; color: #d32f2f; text-decoration: none; transition: background 0.2s; border-top: 1px solid #eee; margin-top: 4px;" onmouseover="this.style.background='#ffebee'" onmouseout="this.style.background='white'">
+                                    🚪 Đăng xuất
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                    // Toggle dropdown
+                    document.getElementById('userAvatarBtn')?.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const dropdown = document.getElementById('userDropdown');
+                        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+                    });
+                    
+                    // Close dropdown when clicking outside
+                    document.addEventListener('click', function(e) {
+                        const container = document.querySelector('.user-avatar-container');
+                        const dropdown = document.getElementById('userDropdown');
+                        if (container && !container.contains(e.target)) {
+                            dropdown.style.display = 'none';
+                        }
+                    });
+                    </script>
+                <?php else: ?>
+                    <!-- Login/Register Buttons -->
+                    <div class="auth-buttons">
+                        <button class="auth-btn" onclick="window.location='<?= BASE_URL ?>login'">Đăng nhập</button>
+                        <button class="auth-btn" onclick="window.location='<?= BASE_URL ?>register'">Đăng Ký</button>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </header>

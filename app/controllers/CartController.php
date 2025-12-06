@@ -5,6 +5,7 @@ use Core\Controller;
 use Core\Auth;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\Home;
 
 class CartController extends Controller
 {
@@ -15,12 +16,16 @@ class CartController extends Controller
         $userId = Auth::id();
         $cartItems = Cart::getItems($userId);
         $total = Cart::getTotal($userId);
+        $homeData = Home::get();
 
         $this->view('cart.index', [
             'title' => 'Giỏ hàng - ' . APP_NAME,
             'cartItems' => $cartItems,
             'total' => $total,
-        ]);
+            'activeMenu' => 'shop',
+            'hideBlogHero' => true,
+            'homeData' => $homeData,
+        ], null, 'public');
     }
 
     public function add(): void
@@ -167,13 +172,17 @@ class CartController extends Controller
 
         // Get user info
         $user = \App\Models\User::findById($userId);
+        $homeData = Home::get();
 
         $this->view('cart.checkout', [
             'title' => 'Thanh toán - ' . APP_NAME,
             'cartItems' => $cartItems,
             'total' => $total,
             'user' => $user,
-        ]);
+            'activeMenu' => 'shop',
+            'hideBlogHero' => true,
+            'homeData' => $homeData,
+        ], null, 'public');
     }
 }
 

@@ -7,7 +7,7 @@ $currentPage = $currentPage ?? 1;
 $totalPages = $totalPages ?? 1;
 ?>
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center text-gray-800">Sản phẩm</h1>
+    <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center text-gray-800">Danh sách sản phẩm</h1>
     
     <!-- Filters -->
     <div class="mb-6 bg-white rounded-lg shadow-md p-4">

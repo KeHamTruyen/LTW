@@ -55,6 +55,7 @@ $router->get('/logout', 'AuthController@logout');
 $router->get('/about', 'AboutController@index');
 
 // Products
+$router->get('/shop', 'ProductController@index');
 $router->get('/products', 'ProductController@index');
 $router->get('/products/show', 'ProductController@show');
 

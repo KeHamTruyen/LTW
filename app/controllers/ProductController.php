@@ -4,6 +4,7 @@ namespace App\Controllers;
 use Core\Controller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Home;
 
 class ProductController extends Controller
 {
@@ -33,6 +34,7 @@ class ProductController extends Controller
         $total = Product::count($filters);
         $totalPages = ceil($total / $perPage);
         $categories = Category::getAll();
+        $homeData = Home::get();
 
         $this->view('products.index', [
             'title' => 'Sản phẩm - ' . APP_NAME,
@@ -43,7 +45,10 @@ class ProductController extends Controller
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'total' => $total,
-        ]);
+            'activeMenu' => 'shop',
+            'hideBlogHero' => true,
+            'homeData' => $homeData,
+        ], null, 'public');
     }
 
     public function show(): void
@@ -70,12 +75,17 @@ class ProductController extends Controller
             'status' => 'published',
             'category_id' => $product['category_id'],
         ]);
+        
+        $homeData = Home::get();
 
         $this->view('products.show', [
             'title' => htmlspecialchars($product['name']) . ' - ' . APP_NAME,
             'product' => $product,
             'relatedProducts' => $relatedProducts,
-        ]);
+            'activeMenu' => 'shop',
+            'hideBlogHero' => true,
+            'homeData' => $homeData,
+        ], null, 'public');
     }
 }
 

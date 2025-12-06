@@ -4,6 +4,7 @@ namespace App\Controllers;
 use Core\Controller;
 use Core\Auth;
 use App\Models\User;
+use App\Models\Home;
 
 class ProfileController extends Controller
 {
@@ -21,10 +22,15 @@ class ProfileController extends Controller
             exit;
         }
 
+        $homeData = Home::get();
+        
         $this->view('profile.index', [
             'title' => 'Thông tin cá nhân - ' . APP_NAME,
             'user' => $user,
-        ]);
+            'activeMenu' => 'profile',
+            'hideBlogHero' => true,
+            'homeData' => $homeData,
+        ], null, 'public');
     }
 
     public function edit(): void
@@ -36,10 +42,15 @@ class ProfileController extends Controller
             exit;
         }
 
+        $homeData = Home::get();
+        
         $this->view('profile.edit', [
             'title' => 'Chỉnh sửa thông tin - ' . APP_NAME,
             'user' => $user,
-        ]);
+            'activeMenu' => 'profile',
+            'hideBlogHero' => true,
+            'homeData' => $homeData,
+        ], null, 'public');
     }
 
     public function update(): void
@@ -135,9 +146,14 @@ class ProfileController extends Controller
 
     public function changePassword(): void
     {
+        $homeData = Home::get();
+        
         $this->view('profile.change-password', [
             'title' => 'Đổi mật khẩu - ' . APP_NAME,
-        ]);
+            'activeMenu' => 'profile',
+            'hideBlogHero' => true,
+            'homeData' => $homeData,
+        ], null, 'public');
     }
 
     public function updatePassword(): void

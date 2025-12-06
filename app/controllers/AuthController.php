@@ -61,6 +61,9 @@ class AuthController extends Controller
         $_SESSION['user_name'] = $user['name'];
         $_SESSION['user_email'] = $user['email'];
         $_SESSION['user_role'] = $user['role'];
+        if (!empty($user['avatar_url'])) {
+            $_SESSION['user_avatar'] = $user['avatar_url'];
+        }
 
         // Update last login
         User::updateLastLogin($user['id']);
@@ -160,6 +163,7 @@ class AuthController extends Controller
             $_SESSION['user_name'] = $name;
             $_SESSION['user_email'] = $email;
             $_SESSION['user_role'] = 'customer';
+            // New user doesn't have avatar yet
 
             $_SESSION['flash_success'] = 'Đăng ký thành công!';
             header('Location: ' . BASE_URL);
