@@ -109,7 +109,7 @@ $totalPages = $totalPages ?? 1;
                                             'customer' => 'Khách hàng',
                                         ];
                                         ?>
-                                        <span class="text-white badge <?= $roleBadges[$user['role']] ?? 'bg-secondary' ?>">
+                                        <span class="badge <?= $roleBadges[$user['role']] ?? 'bg-secondary' ?> text-white">
                                             <?= $roleLabels[$user['role']] ?? $user['role'] ?>
                                         </span>
                                     </td>
@@ -126,7 +126,7 @@ $totalPages = $totalPages ?? 1;
                                             'banned' => 'Đã khóa',
                                         ];
                                         ?>
-                                        <span class="text-white badge <?= $statusBadges[$user['status']] ?? 'bg-secondary' ?>">
+                                        <span class="badge <?= $statusBadges[$user['status']] ?? 'bg-secondary' ?> text-white">
                                             <?= $statusLabels[$user['status']] ?? $user['status'] ?>
                                         </span>
                                     </td>
