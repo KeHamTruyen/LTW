@@ -65,7 +65,7 @@
       </div>
       <div class="card-footer text-center py-3">
         <div class="text-secondary">
-          Tài khoản demo: <code>admin@petcare.com</code> / <code>password</code>
+          Tài khoản demo: <code>admin@example.com</code> / <code>admin123</code>
         </div>
       </div>
     </div>

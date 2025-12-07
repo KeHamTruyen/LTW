@@ -172,8 +172,8 @@ class PostController extends Controller
         $commentData = [
             'post_id' => $postId,
             'user_id' => $_SESSION['user_id'] ?? null,
-            'author_name' => $authorName,
-            'author_email' => $authorEmail,
+            'author_name' => isset($_SESSION['user_id']) ? $_SESSION['user_name'] : $authorName,
+            'author_email' => isset($_SESSION['user_id']) ? $_SESSION['user_email'] : $authorEmail,
             'content' => $content,
             'rating' => $rating,
             'status' => 'pending', // Admin must approve

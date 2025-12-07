@@ -44,10 +44,12 @@ cd LTW
 ### 2. Cài đặt Database
 
 **Bước 1: Khởi động XAMPP**
+
 - Mở XAMPP Control Panel
 - Start **Apache** và **MySQL**
 
 **Bước 2: Import Database**
+
 - Mở trình duyệt, truy cập: `http://localhost/phpmyadmin`
 - Click tab **SQL**
 - Copy toàn bộ nội dung file `database/complete_database.sql`
@@ -55,6 +57,7 @@ cd LTW
 - Database `petcare_db` sẽ được tạo tự động với đầy đủ bảng và dữ liệu mẫu
 
 **Dữ liệu mặc định:**
+
 - Admin: `admin@example.com` / `admin123`
 - 5 bài viết mẫu với comments
 - Categories, FAQs, pages, home page content
@@ -62,11 +65,12 @@ cd LTW
 ### 3. Cấu hình (nếu cần)
 
 File `app/config.php` đã có cấu hình mặc định cho XAMPP:
-  - Host: `localhost`
-  - Database: `petcare_db`
-  - User: `root`
-  - Password: (để trống)
-  
+
+- Host: `localhost`
+- Database: `petcare_db`
+- User: `root`
+- Password: (để trống)
+
 **Chỉ cần sửa nếu MySQL của bạn có password hoặc cổng khác.**
 
 ### 4. Cấu hình Apache (bật mod_rewrite)
@@ -81,6 +85,7 @@ Dự án sử dụng URL rewriting, cần bật `mod_rewrite` trong Apache:
 ### 5. Truy cập website
 
 Mở trình duyệt và truy cập:
+
 - **Trang chủ**: `http://localhost/LTW/`
 - **Blog**: `http://localhost/LTW/posts`
 - **Admin**: `http://localhost/LTW/admin` (đăng nhập bằng admin@example.com / admin123)
@@ -98,6 +103,7 @@ Sau khi cài đặt xong, truy cập các URL sau:
 - **Đăng nhập Admin**: `http://localhost/LTW/admin/login`
 
 **Tài khoản Admin mặc định:**
+
 - Email: `admin@example.com`
 - Password: `admin123`
 
@@ -118,7 +124,7 @@ Dự án sử dụng clean URL với `.htaccess`:
 - ✅ Sidebar: danh mục, bài viết gần đây
 - ✅ Hero section với logo 4 con chó
 - ✅ Responsive design
-- ✅ Chi tiết bài viết 
+- ✅ Chi tiết bài viết
 - ✅ Bình luận và đánh giá
 
 ### Authentication
@@ -195,7 +201,6 @@ class Post extends Model {
 - Kiểm tra database `petcare_db` đã được tạo
 
 ## Phát triển tiếp
-
 
 ### Coding Standards
 

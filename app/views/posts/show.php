@@ -130,6 +130,7 @@
                         <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
                         <input type="hidden" name="csrf" value="<?= $_SESSION['csrf'] ?? '' ?>">
                         
+                        <?php if (!isset($_SESSION['user_id'])): ?>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Author Name Input -->
                             <div>
@@ -161,6 +162,14 @@
                                 />
                             </div>
                         </div>
+                        <?php else: ?>
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                            <p class="text-sm text-gray-700">
+                                Đăng nhập với tài khoản: <strong><?= htmlspecialchars($_SESSION['user_name'] ?? $_SESSION['user_email']) ?></strong>
+                                <span class="text-gray-500">(<?= htmlspecialchars($_SESSION['user_email']) ?>)</span>
+                            </p>
+                        </div>
+                        <?php endif; ?>
 
                         <!-- Comment Textarea -->
                         <div>
