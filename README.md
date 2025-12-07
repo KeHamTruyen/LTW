@@ -88,7 +88,7 @@ Mở trình duyệt và truy cập:
 
 - **Trang chủ**: `http://localhost/LTW/`
 - **Blog**: `http://localhost/LTW/posts`
-- **Admin**: `http://localhost/LTW/admin` (đăng nhập bằng admin@example.com / admin123)
+- **Admin**: `http://localhost/LTW/admin` (đăng nhập bằng admin@petcare.com / admin123)
 
 ✅ **Hoàn tất! Website đã sẵn sàng.**
 
@@ -136,9 +136,9 @@ Dự án sử dụng clean URL với `.htaccess`:
 
 ### Admin Dashboard
 
-- ✅ Quản lý bài viết (đang phát triển)
-- ✅ Quản lý người dùng (đang phát triển)
-- ✅ Thống kê (đang phát triển)
+- ✅ Quản lý bài viết
+- ✅ Quản lý người dùng 
+- ✅ Thống kê
 
 ## Kiến trúc MVC
 
