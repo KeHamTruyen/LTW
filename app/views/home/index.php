@@ -97,13 +97,9 @@
             <p class="text-[#f97316] font-semibold"><?= htmlspecialchars($homeData['about_subtitle'] ?? 'Pet\'s Choice') ?></p>
             <h3 class="text-3xl font-extrabold text-[#111827] leading-tight"><?= htmlspecialchars($homeData['about_title'] ?? 'The smarter way to service for your pet') ?></h3>
             <p class="text-gray-600"><?= htmlspecialchars($homeData['about_description'] ?? 'Chăm sóc thú cưng tận tâm với đội ngũ chuyên nghiệp, quy trình khoa học và an toàn cho bé.') ?></p>
-            <?php 
-            $aboutButtonText = $homeData['about_button_text'] ?? 'Xem thêm';
-            if (!empty($firstPost)): ?>
-                <button class="inline-flex items-center justify-center px-6 py-3 bg-[#111827] text-white rounded-full shadow hover:bg-[#0b1220] transition" onclick="window.location='<?= BASE_URL ?>posts/<?= htmlspecialchars($firstPost['slug']) ?>'"><?= htmlspecialchars($aboutButtonText) ?></button>
-            <?php else: ?>
-                <button class="inline-flex items-center justify-center px-6 py-3 bg-[#111827] text-white rounded-full shadow hover:bg-[#0b1220] transition" onclick="window.location='<?= BASE_URL ?>posts'"><?= htmlspecialchars($aboutButtonText) ?></button>
-            <?php endif; ?>
+            <?php $aboutButtonText = $homeData['about_button_text'] ?? 'Xem thêm'; ?>
+                <button class="inline-flex items-center justify-center px-6 py-3 bg-[#111827] text-white rounded-full shadow hover:bg-[#0b1220] transition" 
+                onclick="window.location='<?= BASE_URL ?>posts'"><?= htmlspecialchars($aboutButtonText) ?></button>
         </div>
     </div>
 </section>
@@ -165,7 +161,8 @@
                 </button>
             </div>
             <div class="text-center mt-8">
-                <button class="inline-flex items-center justify-center px-6 py-3 bg-[#0ea5e9] text-white rounded-full shadow hover:bg-[#0284c7] transition" onclick="window.location='<?= BASE_URL ?>shop'">
+                <button class="inline-flex items-center justify-center px-6 py-3 bg-[#0ea5e9] text-white rounded-full shadow hover:bg-[#0284c7] transition" 
+                onclick="window.location='<?= BASE_URL ?>shop'">
                     <?= htmlspecialchars($homeData['products_button_text'] ?? 'Xem Shop') ?>
                 </button>
             </div>

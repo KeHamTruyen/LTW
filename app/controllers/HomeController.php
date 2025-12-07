@@ -23,9 +23,6 @@ class HomeController extends Controller
             'offset' => 0
         ]);
         
-        // Lấy bài viết đầu tiên để dùng cho link service
-        $firstPost = !empty($latestPosts) ? $latestPosts[0] : null;
-        
         // Parse service combos từ JSON
         $serviceCombos = [];
         if ($homeData && !empty($homeData['service_combos'])) {
@@ -40,7 +37,6 @@ class HomeController extends Controller
             'serviceCombos' => $serviceCombos,
             'featuredProducts' => $featuredProducts,
             'latestPosts' => $latestPosts,
-            'firstPost' => $firstPost,
         ], null, 'public');
     }
 }
