@@ -18,42 +18,58 @@ LTW/
 │   ├── core/             # Core ứng dụng (BaseController, routing...)
 │   ├── views/            # Giao diện view cho người dùng
 │   └── config.php        # Cấu hình chung
-├── database/             # Migrate, seed, schema SQL và script khởi tạo database
-│   ├── migrations/
-│   ├── migrate_all.php
-│   ├── schema.sql
-│   ├── seed.php
-│   └── seed_posts.sql
-├── public/               # Static assets, entrypoint index.php, assets, init-db
+├── database/             # Database SQL
+│   ├── complete_database.sql  # File SQL hoàn chỉnh (chỉ cần import file này)
+│   └── .htaccess
+├── public/               # Static assets, entrypoint index.php
 │   ├── assets/
 │   ├── index.php
-│   ├── init-db.php
 │   └── .htaccess
-├── setup.php             # Script thiết lập mới
-├── package.json          # Quản lý package (nếu có dùng npm/yarn)
-├── README.md             # File này
-├── [ADMIN_GUIDE.md]      # Hướng dẫn cho admin
-├── [ASSETS_GUIDE.md]     # Hướng dẫn asset
-├── assignment.pdf        # Đề tài bài tập/project
+├── README.md             # Hướng dẫn cài đặt và sử dụng
+├── BAO_CAO_DU_AN.md      # Báo cáo dự án (Markdown)
+├── BAO_CAO_DU_AN.tex     # Báo cáo dự án (LaTeX)
+└── package.json          # Quản lý package Node.js (nếu có)
 ```
 
 ## Cài đặt nhanh
 
-### 1. Database
+### 1. Clone dự án
 
-- Mở phpMyAdmin (http://localhost/phpmyadmin)
-- Tạo database mới: `petcare_db`
-- Import file `database/schema.sql`
+```bash
+cd C:\xampp\htdocs
+git clone https://github.com/KeHamTruyen/LTW.git
+cd LTW
+```
 
-### 2. Cấu hình
+### 2. Cài đặt Database
 
-- Mở `app/core/config.php` → chỉnh thông tin MySQL nếu cần:
+**Bước 1: Khởi động XAMPP**
+- Mở XAMPP Control Panel
+- Start **Apache** và **MySQL**
+
+**Bước 2: Import Database**
+- Mở trình duyệt, truy cập: `http://localhost/phpmyadmin`
+- Click tab **SQL**
+- Copy toàn bộ nội dung file `database/complete_database.sql`
+- Paste vào ô SQL và click **Go**
+- Database `petcare_db` sẽ được tạo tự động với đầy đủ bảng và dữ liệu mẫu
+
+**Dữ liệu mặc định:**
+- Admin: `admin@example.com` / `admin123`
+- 5 bài viết mẫu với comments
+- Categories, FAQs, pages, home page content
+
+### 3. Cấu hình (nếu cần)
+
+File `app/config.php` đã có cấu hình mặc định cho XAMPP:
   - Host: `localhost`
   - Database: `petcare_db`
   - User: `root`
-  - Password: (để trống với XAMPP mặc định)
+  - Password: (để trống)
+  
+**Chỉ cần sửa nếu MySQL của bạn có password hoặc cổng khác.**
 
-### 3. Cấu hình Apache (.htaccess)
+### 4. Cấu hình Apache (bật mod_rewrite)
 
 Dự án sử dụng URL rewriting, cần bật `mod_rewrite` trong Apache:
 
@@ -62,20 +78,30 @@ Dự án sử dụng URL rewriting, cần bật `mod_rewrite` trong Apache:
 - Bỏ dấu `#` để uncomment
 - Restart Apache
 
-### 4. Assets
+### 5. Truy cập website
 
-- Logo 4 con chó: đã có sẵn tại `public/assets/images/logo.png`
-- Tabler admin assets: đã copy vào `public/assets/tabler/`
+Mở trình duyệt và truy cập:
+- **Trang chủ**: `http://localhost/LTW/`
+- **Blog**: `http://localhost/LTW/posts`
+- **Admin**: `http://localhost/LTW/admin` (đăng nhập bằng admin@example.com / admin123)
+
+✅ **Hoàn tất! Website đã sẵn sàng.**
 
 ## Chạy dự án
 
-### URL truy cập
+Sau khi cài đặt xong, truy cập các URL sau:
 
-- **Trang Blog**: `http://localhost/LTW/posts`
-- **Trang chủ**: `http://localhost/LTW/` (đang phát triển)
-- **Admin dashboard**: `http://localhost/LTW/admin` (đang phát triển)
+- **Trang chủ**: `http://localhost/LTW/`
+- **Blog**: `http://localhost/LTW/posts`
+- **Chi tiết bài viết**: `http://localhost/LTW/post/[slug]`
+- **Admin Dashboard**: `http://localhost/LTW/admin`
+- **Đăng nhập Admin**: `http://localhost/LTW/admin/login`
 
-### Routing
+**Tài khoản Admin mặc định:**
+- Email: `admin@example.com`
+- Password: `admin123`
+
+### Cách hoạt động của Routing
 
 Dự án sử dụng clean URL với `.htaccess`:
 

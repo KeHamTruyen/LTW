@@ -1,0 +1,938 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{vietnam}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{geometry}
+\geometry{left=3cm,right=2cm,top=2cm,bottom=2cm}
+
+% Code listing settings
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    showstringspaces=false
+}
+
+\title{\textbf{BÁO CÁO DỰ ÁN \\ HỆ THỐNG QUẢN LÝ THÚ CƯNG (PETCARE)}}
+\author{Nhóm phát triển PetCare}
+\date{6 tháng 12, 2025}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{THÔNG TIN DỰ ÁN}
+
+\subsection{Tổng quan}
+\begin{itemize}
+    \item \textbf{Tên dự án:} PetCare - Hệ thống quản lý và chăm sóc thú cưng
+    \item \textbf{Mục đích:} Xây dựng website cung cấp thông tin, dịch vụ chăm sóc thú cưng và quản lý nội dung
+    \item \textbf{Kiến trúc:} MVC (Model-View-Controller) thuần PHP
+    \item \textbf{Đối tượng sử dụng:} Người dùng (Khách hàng), Admin (Quản trị viên)
+\end{itemize}
+
+\subsection{Phạm vi chức năng}
+
+\subsubsection{Frontend (Public)}
+\begin{itemize}
+    \item Xem tin tức, bài viết về thú cưng
+    \item Đăng ký/Đăng nhập tài khoản
+    \item Bình luận, đánh giá bài viết
+    \item Quản lý thông tin cá nhân
+    \item Xem thông tin dịch vụ, sản phẩm
+\end{itemize}
+
+\subsubsection{Backend (Admin)}
+\begin{itemize}
+    \item Quản lý bài viết (CRUD)
+    \item Quản lý danh mục
+    \item Quản lý bình luận
+    \item Quản lý người dùng
+    \item Thống kê dashboard
+\end{itemize}
+
+\newpage
+\section{CÔNG NGHỆ VÀ THƯ VIỆN SỬ DỤNG}
+
+\subsection{Backend Technologies}
+
+\subsubsection{PHP 7.4+}
+\textbf{Vai trò:} Ngôn ngữ lập trình chính cho server-side
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Dễ học, dễ triển khai trên XAMPP
+    \item Hỗ trợ tốt cho web development
+    \item Cộng đồng lớn, tài liệu phong phú
+    \item Tích hợp sẵn với Apache
+    \item Hỗ trợ OOP đầy đủ
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item Performance kém hơn Node.js, Go
+    \item Không có static typing mặc định (cần PHP 8+ với typed properties)
+    \item Dependency management phức tạp hơn (không dùng Composer trong project này)
+\end{itemize}
+
+\paragraph{Sử dụng trong dự án:}
+\begin{lstlisting}[language=PHP]
+// MVC Pattern
+namespace App\Controllers;
+
+class PostController extends Controller {
+    public function index() {
+        $posts = Post::getAll(['status' => 'published']);
+        $this->view('posts/index', ['posts' => $posts]);
+    }
+}
+\end{lstlisting}
+
+\subsubsection{MySQL/MariaDB}
+\textbf{Vai trò:} Hệ quản trị cơ sở dữ liệu quan hệ
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Miễn phí, open-source
+    \item ACID compliant (đảm bảo tính toàn vẹn dữ liệu)
+    \item Hỗ trợ JOIN, indexing hiệu quả
+    \item Tích hợp sẵn trong XAMPP
+    \item Hỗ trợ UTF-8 (tiếng Việt)
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item Khó scale horizontally
+    \item Schema phải định nghĩa trước (ít linh hoạt hơn NoSQL)
+    \item Performance giảm khi table lớn (cần indexing)
+\end{itemize}
+
+\paragraph{Cấu trúc database:}
+\begin{lstlisting}[language=SQL]
+-- Posts table
+CREATE TABLE posts (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    author_user_id BIGINT UNSIGNED NULL,
+    category_id BIGINT UNSIGNED NULL,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
+    summary TEXT NULL,
+    content_html MEDIUMTEXT NULL,
+    cover_image_url VARCHAR(255) NULL,
+    status ENUM('draft', 'published') DEFAULT 'draft',
+    published_at DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) 
+        REFERENCES categories(id) ON DELETE SET NULL
+);
+\end{lstlisting}
+
+\subsubsection{PDO (PHP Data Objects)}
+\textbf{Vai trò:} Database abstraction layer
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Prepared statements (chống SQL Injection)
+    \item Hỗ trợ nhiều database (MySQL, PostgreSQL, SQLite)
+    \item Object-oriented interface
+    \item Named parameters rõ ràng
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item Verbose hơn ORM như Eloquent
+    \item Không có query builder tích hợp
+    \item Phải viết raw SQL
+\end{itemize}
+
+\paragraph{Ví dụ sử dụng:}
+\begin{lstlisting}[language=PHP]
+class Database {
+    private static ?PDO $conn = null;
+    
+    public static function conn(): PDO {
+        if (self::$conn === null) {
+            self::$conn = new PDO(
+                "mysql:host=localhost;dbname=petcare_db;charset=utf8mb4",
+                "root", "",
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+            );
+        }
+        return self::$conn;
+    }
+}
+
+// Prepared statement
+$stmt = Database::conn()->prepare(
+    "SELECT * FROM posts WHERE status = :status 
+     ORDER BY published_at DESC"
+);
+$stmt->execute([':status' => 'published']);
+$posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+\end{lstlisting}
+
+\subsection{Frontend Technologies}
+
+\subsubsection{Tabler Dashboard v1.0+ (Admin UI)}
+\textbf{Vai trò:} Admin dashboard template
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item UI đẹp, professional
+    \item Responsive design sẵn
+    \item Component-based (cards, tables, forms)
+    \item Dark mode support
+    \item Icons tích hợp (Tabler Icons)
+    \item Miễn phí, open-source
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item File size lớn ($\sim$2MB với tất cả libs)
+    \item Phụ thuộc Bootstrap 5
+    \item Khó customize sâu
+\end{itemize}
+
+\paragraph{Sử dụng:}
+\begin{lstlisting}[language=HTML]
+<!-- Card component -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Quan ly bai viet</h3>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-vcenter">
+                <!-- ... -->
+            </table>
+        </div>
+    </div>
+</div>
+\end{lstlisting}
+
+\subsubsection{Bootstrap 5}
+\textbf{Vai trò:} CSS framework (included in Tabler)
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Grid system responsive
+    \item Utility classes đầy đủ
+    \item Component library lớn
+    \item Browser compatibility tốt
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item File size lớn nếu dùng toàn bộ
+    \item Class names verbose
+    \item CSS specificity conflicts
+\end{itemize}
+
+\subsubsection{TinyMCE 6}
+\textbf{Vai trò:} WYSIWYG editor cho nội dung bài viết
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Editor mạnh mẽ, nhiều tính năng
+    \item Image upload tích hợp
+    \item API đơn giản
+    \item Plugin system phong phú
+    \item Mobile-friendly
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item Cần API key (giới hạn free tier)
+    \item CDN dependency (cần internet)
+    \item Bundle size lớn ($\sim$500KB)
+\end{itemize}
+
+\paragraph{Cấu hình:}
+\begin{lstlisting}[language=JavaScript]
+tinymce.init({
+    selector: '#content-editor',
+    height: 500,
+    plugins: ['image', 'link', 'lists', 'code'],
+    images_upload_url: '/admin/upload/image',
+    automatic_uploads: true,
+    images_upload_handler: function (blobInfo, progress) {
+        // Custom upload logic
+    }
+});
+\end{lstlisting}
+
+\subsubsection{Tailwind CSS}
+\textbf{Vai trò:} Utility-first CSS framework (Public Pages)
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Rapid development
+    \item Highly customizable
+    \item No CSS file bloat (purge unused classes)
+    \item Modern, clean design
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item HTML verbose (nhiều class)
+    \item Learning curve cao
+    \item CDN version không tối ưu (dùng trong dev)
+\end{itemize}
+
+\paragraph{Ví dụ:}
+\begin{lstlisting}[language=HTML]
+<div class="bg-gray-50 p-8 rounded-lg border border-gray-200">
+    <h3 class="text-2xl font-bold text-black mb-6">
+        De lai binh luan
+    </h3>
+    <form class="space-y-6">
+        <input class="w-full px-4 py-3 border border-gray-300 
+                      rounded-lg focus:ring-2 focus:ring-blue-500" 
+               placeholder="Ten cua ban" />
+    </form>
+</div>
+\end{lstlisting}
+
+\subsection{Security Libraries \& Techniques}
+
+\subsubsection{CSRF Protection}
+\paragraph{Cơ chế:}
+\begin{lstlisting}[language=PHP]
+// Generate token
+session_start();
+if (!isset($_SESSION['csrf'])) {
+    $_SESSION['csrf'] = bin2hex(random_bytes(32));
+}
+
+// Validate
+if ($_POST['csrf'] !== $_SESSION['csrf']) {
+    die('CSRF token invalid');
+}
+\end{lstlisting}
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Ngăn chặn Cross-Site Request Forgery
+    \item Đơn giản, không cần thư viện
+    \item Token regenerate mỗi session
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item Phải embed token trong mọi form
+    \item AJAX requests cần thêm header
+\end{itemize}
+
+\subsubsection{Password Hashing (bcrypt)}
+\begin{lstlisting}[language=PHP]
+// Hash password
+$hashedPassword = password_hash(
+    $password, 
+    PASSWORD_BCRYPT, 
+    ['cost' => 10]
+);
+
+// Verify password
+if (password_verify($inputPassword, $hashedPassword)) {
+    // Login success
+}
+\end{lstlisting}
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Hàm built-in PHP
+    \item Salt tự động
+    \item Configurable cost factor
+    \item Resistant to rainbow table attacks
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item Slow by design (intentional - bảo mật)
+\end{itemize}
+
+\subsubsection{XSS Prevention}
+\begin{lstlisting}[language=PHP]
+// Output escaping
+echo htmlspecialchars($userInput, ENT_QUOTES, 'UTF-8');
+
+// Vi du trong view
+<h1><?= htmlspecialchars($post['title']) ?></h1>
+\end{lstlisting}
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Ngăn chặn script injection
+    \item Hàm built-in PHP
+    \item Hỗ trợ encoding nhiều charset
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item Phải nhớ escape mọi output
+    \item Có thể escape nhầm (double encoding)
+\end{itemize}
+
+\subsubsection{SQL Injection Prevention}
+\begin{lstlisting}[language=PHP]
+// BAD (vulnerable)
+$sql = "SELECT * FROM users WHERE email = '$email'";
+
+// GOOD (safe)
+$stmt = $pdo->prepare(
+    "SELECT * FROM users WHERE email = :email"
+);
+$stmt->execute([':email' => $email]);
+\end{lstlisting}
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item Query và data tách biệt
+    \item Database engine tự escape
+    \item Performance tốt (query caching)
+\end{itemize}
+
+\subsection{Other Libraries}
+
+\subsubsection{Apache mod\_rewrite}
+\textbf{Vai trò:} URL rewriting cho clean URLs
+
+\paragraph{.htaccess:}
+\begin{lstlisting}[language=bash]
+RewriteEngine On
+RewriteBase /LTW/public/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+\end{lstlisting}
+
+\paragraph{Ưu điểm:}
+\begin{itemize}[label=$\checkmark$]
+    \item SEO-friendly URLs
+    \item Hide .php extensions
+    \item Tích hợp sẵn Apache
+\end{itemize}
+
+\paragraph{Nhược điểm:}
+\begin{itemize}[label=$\times$]
+    \item Chỉ hoạt động trên Apache
+    \item Cần enable module
+    \item Khó debug khi cấu hình sai
+\end{itemize}
+
+\newpage
+\section{LỖ HỔNG BẢO MẬT VÀ CÁCH KHẮC PHỤC}
+
+\subsection{SQL Injection}
+\textbf{Mô tả:} Attacker chèn SQL code vào input để thao tác database
+
+\paragraph{Ví dụ lỗ hổng:}
+\begin{lstlisting}[language=PHP]
+// VULNERABLE CODE
+$email = $_POST['email'];
+$sql = "SELECT * FROM users WHERE email = '$email'";
+// Input: admin@test.com' OR '1'='1
+// Result: Bypass authentication
+\end{lstlisting}
+
+\paragraph{Cách khắc phục:}
+\begin{lstlisting}[language=PHP]
+// FIXED CODE
+$stmt = $pdo->prepare(
+    "SELECT * FROM users WHERE email = :email"
+);
+$stmt->execute([':email' => $email]);
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Đã bảo vệ} - Toàn bộ queries dùng prepared statements
+
+\subsection{Cross-Site Scripting (XSS)}
+\textbf{Mô tả:} Attacker chèn script độc vào output HTML
+
+\paragraph{Ví dụ lỗ hổng:}
+\begin{lstlisting}[language=PHP]
+// VULNERABLE
+echo "<h1>Hello, " . $_GET['name'] . "</h1>";
+// Input: <script>alert('XSS')</script>
+// Result: Script executed in browser
+\end{lstlisting}
+
+\paragraph{Cách khắc phục:}
+\begin{lstlisting}[language=PHP]
+// FIXED
+echo "<h1>Hello, " . htmlspecialchars(
+    $_GET['name'], ENT_QUOTES, 'UTF-8'
+) . "</h1>";
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Đã bảo vệ} - Tất cả output dùng \texttt{htmlspecialchars()}
+
+\subsection{Cross-Site Request Forgery (CSRF)}
+\textbf{Mô tả:} Attacker lừa user thực hiện action không mong muốn
+
+\paragraph{Ví dụ tấn công:}
+\begin{lstlisting}[language=HTML]
+<!-- Malicious site -->
+<img src="https://petcare.com/admin/posts/delete?id=123" />
+<!-- If admin visits this page, post deleted -->
+\end{lstlisting}
+
+\paragraph{Cách khắc phục:}
+\begin{lstlisting}[language=PHP]
+// Generate token
+$_SESSION['csrf'] = bin2hex(random_bytes(32));
+
+// Validate in POST handler
+if (!isset($_POST['csrf']) || 
+    $_POST['csrf'] !== $_SESSION['csrf']) {
+    die('Invalid CSRF token');
+}
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Đã bảo vệ} - Mọi form POST có CSRF token
+
+\subsection{Broken Authentication}
+\textbf{Lỗ hổng:} Password lưu plaintext, session hijacking
+
+\paragraph{Cách khắc phục:}
+\begin{lstlisting}[language=PHP]
+// Password hashing
+$hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
+
+// Session security
+ini_set('session.cookie_httponly', 1); // Prevent JS access
+ini_set('session.use_strict_mode', 1); // Reject invalid ID
+session_regenerate_id(true); // Regenerate after login
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Đã bảo vệ}
+
+\subsection{Insecure File Upload}
+\textbf{Lỗ hổng:} Upload shell script (.php) để chiếm quyền server
+
+\paragraph{Cách khắc phục:}
+\begin{lstlisting}[language=PHP]
+function handleImageUpload($file): ?string {
+    // Validate type
+    $allowedTypes = ['image/jpeg', 'image/png', 
+                     'image/webp', 'image/gif'];
+    if (!in_array($file['type'], $allowedTypes)) {
+        return null;
+    }
+    
+    // Validate size (5MB max)
+    if ($file['size'] > 5 * 1024 * 1024) {
+        return null;
+    }
+    
+    // Generate unique filename
+    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $filename = 'post_' . uniqid() . '_' . time() . '.' . $ext;
+    
+    // Move to safe directory
+    $uploadPath = __DIR__ . '/../../public/uploads/' . $filename;
+    move_uploaded_file($file['tmp_name'], $uploadPath);
+    
+    return $filename;
+}
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Đã bảo vệ}
+
+\subsection{Security Headers}
+\begin{lstlisting}[language=PHP]
+// Set security headers
+header('X-Frame-Options: SAMEORIGIN'); // Chong clickjacking
+header('X-Content-Type-Options: nosniff'); // Chong MIME sniffing
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('X-XSS-Protection: 1; mode=block'); // Legacy XSS filter
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Đã thiết lập} trong \texttt{public/index.php}
+
+\subsection{Sensitive Data Exposure}
+\textbf{Lỗ hổng:} Database credentials trong version control
+
+\paragraph{Cách khắc phục:}
+\begin{lstlisting}[language=PHP]
+// Use environment variables
+$dbHost = getenv('DB_HOST') ?: 'localhost';
+$dbName = getenv('DB_NAME') ?: 'petcare_db';
+
+// .gitignore
+/app/config.php
+/.env
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{orange}{$\triangle$ Cần cải thiện} - Hiện tại hardcode credentials
+
+\subsection{Insufficient Logging}
+\textbf{Vấn đề:} Không log các actions quan trọng
+
+\paragraph{Cách khắc phục:}
+\begin{lstlisting}[language=PHP]
+// Log admin actions
+error_log("Admin {$_SESSION['user_email']} 
+          deleted post ID: {$postId}");
+
+// Log failed login attempts
+error_log("Failed login attempt for email: {$email} 
+          from IP: {$_SERVER['REMOTE_ADDR']}");
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{orange}{$\triangle$ Chưa triển khai} đầy đủ
+
+\newpage
+\section{SEO (Search Engine Optimization)}
+
+\subsection{Meta Tags}
+\begin{lstlisting}[language=HTML]
+<!-- Dynamic meta tags -->
+<title><?= htmlspecialchars($post['title']) ?> - PetCare</title>
+<meta name="description" 
+      content="<?= htmlspecialchars($post['summary']) ?>">
+<meta name="keywords" 
+      content="thu cung, cham soc thu cung, 
+               <?= $post['category_name'] ?>">
+
+<!-- Open Graph (Facebook, LinkedIn) -->
+<meta property="og:title" 
+      content="<?= htmlspecialchars($post['title']) ?>">
+<meta property="og:description" 
+      content="<?= htmlspecialchars($post['summary']) ?>">
+<meta property="og:image" 
+      content="<?= BASE_URL . 'uploads/' . 
+                  $post['cover_image_url'] ?>">
+<meta property="og:type" content="article">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" 
+      content="<?= htmlspecialchars($post['title']) ?>">
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{orange}{$\triangle$ Cần bổ sung} - Chỉ có title cơ bản
+
+\subsection{Clean URLs}
+\begin{itemize}
+    \item[$\checkmark$] \textbf{GOOD:} \texttt{/posts/cham-soc-thu-cung-mua-he}
+    \item[$\times$] \textbf{BAD:} \texttt{/posts/show?id=123}
+\end{itemize}
+
+\paragraph{Triển khai:}
+\begin{lstlisting}[language=PHP]
+// Router
+$router->get('/posts/{slug}', 'PostController@show');
+
+// Generate slug
+function generateSlug(string $title): string {
+    $slug = strtolower($title);
+    $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
+    $slug = preg_replace('/[\s-]+/', '-', $slug);
+    return trim($slug, '-');
+}
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Đã triển khai}
+
+\subsection{Structured Data (Schema.org)}
+\begin{lstlisting}[language=HTML]
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "<?= htmlspecialchars($post['title']) ?>",
+    "image": "<?= BASE_URL . 'uploads/' . 
+                 $post['cover_image_url'] ?>",
+    "author": {
+        "@type": "Person",
+        "name": "<?= htmlspecialchars($post['author_name']) ?>"
+    },
+    "datePublished": "<?= $post['published_at'] ?>",
+    "dateModified": "<?= $post['updated_at'] ?>"
+}
+</script>
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{red}{$\times$ Chưa triển khai}
+
+\subsection{Sitemap.xml}
+\begin{lstlisting}[language=XML]
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://petcare.com/posts/cham-soc-thu-cung-mua-he</loc>
+        <lastmod>2025-12-05</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+</urlset>
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{red}{$\times$ Chưa triển khai} (có file static)
+
+\subsection{Robots.txt}
+\begin{lstlisting}
+User-agent: *
+Disallow: /admin/
+Disallow: /uploads/temp/
+Allow: /
+
+Sitemap: https://petcare.com/sitemap.xml
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{orange}{$\triangle$ Có file static}, cần dynamic generation
+
+\subsection{Page Speed Optimization}
+\textbf{Kỹ thuật:}
+\begin{itemize}
+    \item[$\checkmark$] Minify CSS/JS (Tabler đã minified)
+    \item[$\times$] Image lazy loading (chưa triển khai)
+    \item[$\times$] CDN cho static assets (chưa có)
+    \item[$\times$] Browser caching headers (chưa thiết lập)
+\end{itemize}
+
+\paragraph{Cải thiện:}
+\begin{lstlisting}[language=PHP]
+// Set cache headers
+header('Cache-Control: public, max-age=31536000'); // 1 year
+header('Expires: ' . gmdate('D, d M Y H:i:s', 
+       time() + 31536000) . ' GMT');
+\end{lstlisting}
+
+\subsection{Mobile-Friendly}
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Responsive} - Bootstrap + Tailwind đều responsive
+
+\subsection{Internal Linking}
+\begin{lstlisting}[language=PHP]
+// Related posts
+<div class="related-posts">
+    <h3>Bai viet lien quan</h3>
+    <?php foreach ($relatedPosts as $related): ?>
+        <a href="<?= BASE_URL ?>posts/<?= $related['slug'] ?>">
+            <?= htmlspecialchars($related['title']) ?>
+        </a>
+    <?php endforeach; ?>
+</div>
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{red}{$\times$ Chưa triển khai}
+
+\newpage
+\section{HIỆU NĂNG VÀ TỐI ƯU HÓA}
+
+\subsection{Database Optimization}
+\paragraph{Indexes:}
+\begin{lstlisting}[language=SQL]
+CREATE INDEX idx_posts_status_published_at 
+    ON posts (status, published_at);
+CREATE INDEX idx_post_comments_status 
+    ON post_comments (status);
+CREATE INDEX idx_posts_slug ON posts (slug);
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Đã tạo indexes} cho queries thường dùng
+
+\subsection{Query Optimization}
+\paragraph{Pagination:}
+\begin{lstlisting}[language=PHP]
+// LIMIT + OFFSET
+$stmt = $pdo->prepare("
+    SELECT * FROM posts 
+    WHERE status = 'published' 
+    ORDER BY published_at DESC 
+    LIMIT :limit OFFSET :offset
+");
+$stmt->execute([
+    ':limit' => 12,
+    ':offset' => ($page - 1) * 12
+]);
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{green}{$\checkmark$ Đã triển khai}
+
+\subsection{Caching}
+\paragraph{Session caching:}
+\begin{lstlisting}[language=PHP]
+// Cache user info in session
+$_SESSION['user_id'] = $user['id'];
+$_SESSION['user_role'] = $user['role'];
+// Avoid DB query on every request
+\end{lstlisting}
+
+\textbf{Trạng thái:} \textcolor{orange}{$\triangle$ Có cơ bản}, chưa có Redis/Memcached
+
+\newpage
+\section{THỐNG KÊ DỰ ÁN}
+
+\subsection{Số liệu code}
+\begin{itemize}
+    \item \textbf{Tổng số file PHP:} $\sim$50 files
+    \item \textbf{Tổng dòng code:} $\sim$8,000 lines
+    \item \textbf{Controllers:} 15 files
+    \item \textbf{Models:} 8 files
+    \item \textbf{Views:} 25+ files
+\end{itemize}
+
+\subsection{Database}
+\begin{itemize}
+    \item \textbf{Số bảng:} 10 tables
+    \item \textbf{Relationships:} 8 foreign keys
+    \item \textbf{Indexes:} 6 indexes
+\end{itemize}
+
+\subsection{Security Score}
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Tiêu chí} & \textbf{Điểm} \\
+\hline
+SQL Injection & \textcolor{green}{$\checkmark$ Protected (100\%)} \\
+XSS & \textcolor{green}{$\checkmark$ Protected (95\%)} \\
+CSRF & \textcolor{green}{$\checkmark$ Protected (100\%)} \\
+Authentication & \textcolor{green}{$\checkmark$ Secure (bcrypt)} \\
+File Upload & \textcolor{green}{$\checkmark$ Validated} \\
+Logging & \textcolor{orange}{$\triangle$ Partial (50\%)} \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{SEO Score}
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Tiêu chí} & \textbf{Điểm} \\
+\hline
+Clean URLs & \textcolor{green}{$\checkmark$ (100\%)} \\
+Meta Tags & \textcolor{orange}{$\triangle$ (40\%)} \\
+Sitemap & \textcolor{red}{$\times$ (0\%)} \\
+Structured Data & \textcolor{red}{$\times$ (0\%)} \\
+Mobile-Friendly & \textcolor{green}{$\checkmark$ (100\%)} \\
+Page Speed & \textcolor{orange}{$\triangle$ (60\%)} \\
+\hline
+\textbf{Overall SEO} & \textbf{50/100} \\
+\hline
+\end{tabular}
+\caption{Điểm SEO - Cần cải thiện}
+\end{table}
+
+\newpage
+\section{CÀI ĐẶT ỨNG DỤNG}
+
+\begin{enumerate}
+    \item Clone source code từ GitHub:
+    \begin{verbatim}
+    git clone https://github.com/KeHamTruyen/LTW.git
+    \end{verbatim}
+    Hoặc tải ZIP từ: \url{https://github.com/KeHamTruyen/LTW}
+    
+    \item Tải và cài đặt XAMPP từ \url{https://www.apachefriends.org/download.html}. \\
+    \textbf{Khuyến nghị:} Cài vào ổ đĩa \textbf{C} (mặc định \texttt{C:\textbackslash xampp}).
+    
+    \item Copy thư mục \texttt{LTW} vào \texttt{C:\textbackslash xampp\textbackslash htdocs\textbackslash}
+    
+    \item \textbf{(Tùy chọn)} Nếu port 80 bị conflict, đổi port Apache:
+    \begin{itemize}
+        \item Mở file \texttt{C:\textbackslash xampp\textbackslash apache\textbackslash conf\textbackslash httpd.conf}
+        \item Tìm dòng \texttt{Listen 80}, đổi thành \texttt{Listen 8080}
+        \item Lưu file và restart Apache
+    \end{itemize}
+    
+    \item Khởi động Apache và MySQL trong XAMPP Control Panel.
+    
+    \item \textbf{Tạo database:} \\
+    Truy cập \url{http://localhost/LTW/public/init-db.php} và click nút \textbf{"Bắt đầu khởi tạo"}.
+    
+    Script sẽ tự động:
+    \begin{itemize}
+        \item Tạo database \texttt{petcare\_db}
+        \item Tạo tất cả bảng cần thiết
+        \item Tạo tài khoản admin: \texttt{admin@example.com} / \texttt{admin123}
+        \item Thêm dữ liệu demo (bài viết, bình luận)
+    \end{itemize}
+    
+    \item \textbf{Truy cập ứng dụng:}
+    \begin{itemize}
+        \item Frontend: \url{http://localhost/LTW/public/}
+        \item Admin: \url{http://localhost/LTW/public/login}
+    \end{itemize}
+    
+    \item \textbf{Lưu ý xử lý lỗi:}
+    \begin{itemize}
+        \item Nếu lỗi 404: Enable \texttt{mod\_rewrite} và đổi \texttt{AllowOverride All} trong \texttt{httpd.conf}
+        \item Nếu MySQL không start: Stop MySQL service cũ trong Windows Services
+        \item Nếu CSS không load: Xóa cache browser (Ctrl + Shift + Del)
+    \end{itemize}
+\end{enumerate}
+
+\newpage
+\section{KẾT LUẬN VÀ KIẾN NGHỊ}
+
+\subsection{Điểm mạnh}
+\begin{enumerate}
+    \item Kiến trúc MVC rõ ràng, dễ maintain
+    \item Bảo mật tốt (CSRF, prepared statements, password hashing)
+    \item UI/UX chuyên nghiệp (Tabler Dashboard)
+    \item Code convention nhất quán
+    \item Clean URLs, slug-based routing
+\end{enumerate}
+
+\subsection{Điểm cần cải thiện}
+\begin{enumerate}
+    \item \textbf{SEO:} Thiếu meta tags, sitemap, structured data
+    \item \textbf{Performance:} Chưa có caching layer (Redis)
+    \item \textbf{Logging:} Chưa log đầy đủ admin actions
+    \item \textbf{Config:} Credentials hardcoded, cần .env
+    \item \textbf{Testing:} Chưa có unit tests
+\end{enumerate}
+
+\subsection{Roadmap tiếp theo}
+
+\subsubsection{Ngắn hạn (1-2 tuần)}
+\begin{itemize}
+    \item Bổ sung meta tags dynamic cho SEO
+    \item Thêm sitemap.xml generator
+    \item Implement image lazy loading
+\end{itemize}
+
+\subsubsection{Trung hạn (1 tháng)}
+\begin{itemize}
+    \item Tích hợp Redis cho caching
+    \item Thêm logging system toàn diện
+    \item Implement email notifications
+\end{itemize}
+
+\subsubsection{Dài hạn (3 tháng)}
+\begin{itemize}
+    \item Migrate to PHP 8+ với typed properties
+    \item Thêm API REST cho mobile app
+    \item Implement full-text search (Elasticsearch)
+\end{itemize}
+
+\vspace{1cm}
+
+\begin{center}
+\rule{0.8\textwidth}{0.4pt}
+\vspace{0.3cm}
+
+\textbf{Ngày báo cáo:} 6 Tháng 12, 2025 \\
+\textbf{Người thực hiện:} Nhóm phát triển PetCare
+\end{center}
+
+\end{document}

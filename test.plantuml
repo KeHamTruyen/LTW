@@ -1,0 +1,143 @@
+@startuml name
+
+enum UserRole {
+  GUEST
+  MEMBER
+  ADMIN
+}
+
+class User {
+  int id
+  string email
+  string passwordHash
+  string fullName
+  string avatar
+  string phone
+  string address
+  UserRole role
+  string status
+  datetime createdAt
+  datetime updatedAt
+}
+
+class ProductCategory {
+  int id
+  string name
+  string slug
+  string description
+}
+
+class Product {
+  int id
+  int categoryId
+  string name
+  string slug
+  string description
+  decimal price
+  string image
+  string status
+  datetime createdAt
+  datetime updatedAt
+}
+
+class PostCategory {
+  int id
+  string name
+  string slug
+  string description
+}
+
+class Post {
+  int id
+  int categoryId
+  int authorId
+  string title
+  string slug
+  string content
+  string image
+  string status
+  string metaTitle
+  string metaDescription
+  datetime createdAt
+  datetime updatedAt
+}
+
+class Comment {
+  int id
+  int userId
+  string targetType
+  int targetId
+  string content
+  int rating
+  string status
+  datetime createdAt
+}
+
+class ContactMessage {
+  int id
+  string name
+  string email
+  string phone
+  string subject
+  string message
+  string status
+  int handledBy
+  datetime createdAt
+}
+
+class FAQQuestion {
+  int id
+  string question
+  string answer
+  string status
+  int createdBy
+  datetime createdAt
+  datetime updatedAt
+}
+
+class Order {
+  int id
+  int userId
+  decimal totalAmount
+  string status
+  string shippingAddress
+  datetime createdAt
+  datetime updatedAt
+}
+
+class OrderItem {
+  int id
+  int orderId
+  int productId
+  int quantity
+  decimal unitPrice
+  decimal totalPrice
+}
+
+class PageContent {
+  int id
+  string slug
+  string title
+  string content
+  int updatedBy
+  datetime updatedAt
+}
+
+User "1" -- "0..*" Comment
+User "1" -- "0..*" Order
+User "1" -- "0..*" ContactMessage : sends
+User "1" -- "0..*" Post : writes
+User "1" -- "0..*" FAQQuestion : asks
+
+ProductCategory "1" -- "0..*" Product
+Product "1" -- "0..*" Comment : comments
+PostCategory "1" -- "0..*" Post
+Post "1" -- "0..*" Comment : comments
+
+Order "1" -- "1..*" OrderItem
+Product "1" -- "0..*" OrderItem
+
+User "1" -- "0..*" PageContent : updates
+
+@enduml
+
