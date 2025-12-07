@@ -100,7 +100,6 @@
             <?php $aboutButtonText = $homeData['about_button_text'] ?? 'Xem thêm'; ?>
                 <button class="inline-flex items-center justify-center px-6 py-3 bg-[#111827] text-white rounded-full shadow hover:bg-[#0b1220] transition" 
                 onclick="window.location='<?= BASE_URL ?>posts'"><?= htmlspecialchars($aboutButtonText) ?></button>
-            <?php ?>
         </div>
     </div>
 </section>
