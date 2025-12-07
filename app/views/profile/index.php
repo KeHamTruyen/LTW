@@ -107,7 +107,7 @@ if (!$user) {
             </div>
             
             <div class="p-6 bg-gray-50 border-t">
-                <div class="flex gap-4">
+                <div class="flex flex-wrap gap-4">
                     <a href="<?= BASE_URL ?>profile/edit" 
                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                         Chỉnh sửa thông tin
@@ -115,6 +115,10 @@ if (!$user) {
                     <a href="<?= BASE_URL ?>profile/change-password" 
                        class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-white transition">
                         Đổi mật khẩu
+                    </a>
+                    <a href="<?= BASE_URL ?>orders" 
+                       class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                        Quản lý đơn hàng
                     </a>
                 </div>
             </div>

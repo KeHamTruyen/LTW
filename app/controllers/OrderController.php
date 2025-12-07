@@ -6,6 +6,7 @@ use Core\Auth;
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\User;
+use App\Models\Home;
 
 class OrderController extends Controller
 {
@@ -27,6 +28,7 @@ class OrderController extends Controller
         $orders = Order::getAll($filters);
         $total = Order::count($filters);
         $totalPages = ceil($total / $perPage);
+        $homeData = Home::get();
 
         $this->view('orders.index', [
             'title' => 'Đơn hàng của tôi - ' . APP_NAME,
@@ -34,7 +36,10 @@ class OrderController extends Controller
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'total' => $total,
-        ]);
+            'homeData' => $homeData,
+            'activeMenu' => 'orders',
+            'hideBlogHero' => true,
+        ], null, 'public');
     }
 
     public function show(): void
@@ -59,12 +64,16 @@ class OrderController extends Controller
         }
 
         $orderItems = Order::getItems($id);
+        $homeData = Home::get();
 
         $this->view('orders.show', [
             'title' => 'Chi tiết đơn hàng #' . $order['order_number'] . ' - ' . APP_NAME,
             'order' => $order,
             'orderItems' => $orderItems,
-        ]);
+            'homeData' => $homeData,
+            'activeMenu' => 'orders',
+            'hideBlogHero' => true,
+        ], null, 'public');
     }
 
     public function checkout(): void
